@@ -1,0 +1,23 @@
+<div class="properties-panel">
+    <h2>Node Properties</h2>
+        <div class="fields">
+            <label for="key">Node Key:</label>
+            <input id="key" [(ngModel)]="nodeProperties.key" name="key" disabled/><br>
+            <label for="left">X Position:</label>
+            <input id="left" [(ngModel)]="nodeProperties.left" name="left" type="number"/><br>
+            <label for="top">Y Position:</label>
+            <input id="top" [(ngModel)]="nodeProperties.top" name="top" type="number"/><br>
+            <label for="width">Node Width:</label>
+            <input id="width" [(ngModel)]="nodeProperties.width" name="width" type="number"/><br>
+            <label for="height">Node Height:</label>
+            <input id="height" [(ngModel)]="nodeProperties.height" name="height" type="number"/><br>
+            <label for="label">Node Label:</label>
+            <input id="label" [(ngModel)]="nodeProperties.label" name="label" type="text"/><br>
+            <label for="color">Node Color:</label>
+            <input id="color" [(ngModel)]="nodeProperties.color" name="color" type="text"/>
+        </div>
+        <div class="button-section">
+            <button (click)="addNewNode()">Add new node</button>
+            <button (click)="updateNewNode()">Update node</button>
+        </div>
+  </div>
