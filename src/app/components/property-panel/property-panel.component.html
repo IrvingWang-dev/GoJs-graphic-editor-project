@@ -14,7 +14,6 @@
             <label for="label">Node Label:</label>
             <input id="label" [(ngModel)]="nodeProperties.label" name="label" type="text"  #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/><br>
             <label for="color">Node Color:</label>
-<<<<<<< HEAD
             <input id="color" [(ngModel)]="nodeProperties.color" name="color" type="text" #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/>
         </div>
         <div id="numericEntryProperty" class="fields" style="display: none;">
@@ -200,9 +199,6 @@
                         </li>
                     </ul>
                     </div>
-=======
-            <input id="color" [(ngModel)]="nodeProperties.color" name="color" type="text"  #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/>
->>>>>>> d2fa684c7ae656c3557c909050732212f37b9e3c
         </div>
         <div class="button-section">
             <button (click)="addNewNode()">Add new node</button>
