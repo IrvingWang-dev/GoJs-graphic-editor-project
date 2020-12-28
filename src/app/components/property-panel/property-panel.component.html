@@ -4,17 +4,17 @@
             <label for="key">Node Key:</label>
             <input id="key" [(ngModel)]="nodeProperties.key" name="key" disabled/><br>
             <label for="left">X Position:</label>
-            <input id="left" [(ngModel)]="nodeProperties.left" name="left" type="number"/><br>
+            <input id="left" [(ngModel)]="nodeProperties.left" name="left" type="number" #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/><br>
             <label for="top">Y Position:</label>
-            <input id="top" [(ngModel)]="nodeProperties.top" name="top" type="number"/><br>
+            <input id="top" [(ngModel)]="nodeProperties.top" name="top" type="number" #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/><br>
             <label for="width">Node Width:</label>
-            <input id="width" [(ngModel)]="nodeProperties.width" name="width" type="number"/><br>
+            <input id="width" [(ngModel)]="nodeProperties.width" name="width" type="number" #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)" /><br>
             <label for="height">Node Height:</label>
-            <input id="height" [(ngModel)]="nodeProperties.height" name="height" type="number"/><br>
+            <input id="height" [(ngModel)]="nodeProperties.height" name="height" type="number"  #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/><br>
             <label for="label">Node Label:</label>
-            <input id="label" [(ngModel)]="nodeProperties.label" name="label" type="text"/><br>
+            <input id="label" [(ngModel)]="nodeProperties.label" name="label" type="text"  #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/><br>
             <label for="color">Node Color:</label>
-            <input id="color" [(ngModel)]="nodeProperties.color" name="color" type="text"/>
+            <input id="color" [(ngModel)]="nodeProperties.color" name="color" type="text"  #myinput (keyup.enter)="onTopEnter(myinput.value)" (blur)="onTopEnter(myinput.value)"/>
         </div>
         <div class="button-section">
             <button (click)="addNewNode()">Add new node</button>
