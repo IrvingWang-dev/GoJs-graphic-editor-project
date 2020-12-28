@@ -42,6 +42,9 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
    */
   public addNewNode() {
 
+    document.getElementById('generalPropertyPanel').style.display='block'; 
+    document.getElementById('numericEntryProperty').style.display='none';
+
     const left = this.nodeProperties.left;
     const top = this.nodeProperties.top;
     const newNodeData = {
@@ -71,5 +74,26 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     }
 
     this.service.updateNode(newNodeData);
+  }
+
+  public onTopEnter(value: string){
+    this.updateNewNode();
+  }
+
+  public numericEntry(){
+    document.getElementById('generalPropertyPanel').style.display='none'; 
+    document.getElementById('numericEntryProperty').style.display='block'; 
+
+    const left = this.nodeProperties.left;
+    const top = this.nodeProperties.top;
+    const newNodeData = {
+      key: (new Date()).getTime(),
+      loc: left + ' ' + top,
+      width: this.nodeProperties.width,
+      height: this.nodeProperties.height,
+      label: this.nodeProperties.label,
+      color: this.nodeProperties.color
+    }
+    this.service.addNewNode(newNodeData);
   }
 }

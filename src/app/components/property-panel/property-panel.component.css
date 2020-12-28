@@ -9,3 +9,67 @@
 .button-section {
     margin-top: 1rem;
 }
+
+.button-toolbox button {
+    margin: 10px 30px;
+    background-color: lightgrey; 
+    border: 1px solid black; 
+    border-radius: 5px;
+    color: black; 
+    padding: 10px 24px; 
+    cursor: pointer; 
+    width: 100%; 
+    display: block; 
+}
+
+.button-toolbox button:hover {
+    background-color: #696969;
+}
+
+#animationList-check {
+    display: none;
+}
+
+#animationList-check:checked ~ .animation-list {
+    display: none;
+}
+
+#appearanceList-check {
+    display: none;
+}
+
+#appearanceList-check:checked ~ .appearance-list {
+    display: none;
+}
+
+#commonList-check {
+    display: none;
+}
+
+#commonList-check:checked ~ .common-list {
+    display: none;
+}
+
+#connectionsList-check {
+    display: none;
+}
+
+#connectionsList-check:checked ~ .connections-list {
+    display: none;
+}
+
+#formatList-check {
+    display: none;
+}
+
+#formatList-check:checked ~ .format-list {
+    display: none;
+}
+
+#navigationList-check {
+    display: none;
+}
+
+#navigationList-check:checked ~ .navigation-list {
+    display: none;
+}
