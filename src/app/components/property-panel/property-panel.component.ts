@@ -76,6 +76,7 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     this.service.updateNode(newNodeData);
   }
 
+<<<<<<< HEAD
   public onTopEnter(value: string){
     this.updateNewNode();
   }
@@ -96,4 +97,9 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     }
     this.service.addNewNode(newNodeData);
   }
+=======
+  public onTopEnter(value: string) {
+     this.updateNewNode(); 
+   }
+>>>>>>> d2fa684c7ae656c3557c909050732212f37b9e3c
 }
