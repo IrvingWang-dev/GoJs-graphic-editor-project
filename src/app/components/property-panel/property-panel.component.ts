@@ -43,6 +43,11 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
       this.nodeProperties = data;
     });
 
+    this.subscription = this.selectionService.OnSelectionChanged.subscribe((data: number) => {
+      
+      this.OnUpdate();
+    });
+
     this.OnUpdate();
   }
 
