@@ -3,6 +3,10 @@ import { Subscription } from 'rxjs';
 import { NodeData } from 'src/app/models/node-data';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
 import { Injectable } from '@angular/core';
+import { PanelDevice } from 'src/app/models/PanelDevice';
+import {SelectionServiceService} from 'src/app/selection-service.service'
+import "reflect-metadata"
+import { Editor } from 'src/app/models/Editor';
 
 @Component({
   selector: 'app-property-panel',
@@ -31,13 +35,15 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
 
   public subscription: Subscription;
 
-  constructor(public service: InteractionProxyService) { }
+  constructor(public service: InteractionProxyService, public selectionService: SelectionServiceService) { }
 
   ngOnInit(): void {
     this.subscription = this.service.diagramChangedSubject.subscribe((data: NodeData) => {
       
       this.nodeProperties = data;
     });
+
+    this.OnUpdate();
   }
 
   ngOnDestroy(): void {
@@ -104,16 +110,25 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     this.service.addNewNode(newNodeData);
   }
 
+  public editors = [];
+
   public OnUpdate()
   {
-    selectedDevices = SelectionService.GetSelectionService();
+    let pd = this.selectionService.selectPanelDevice;
 
-    panelDevice = selectedDevices[0];
-    metaData = panelDevice.GetMetaData();
+    let keys = Object.keys(pd);
 
-    metaData.forEach(element => {
-      
+    
+    keys.forEach(key => {
+      if (Reflect.hasMetadata(Editor, pd, key))
+      {
+        let metadata = Reflect.getMetadata(Editor, pd, key);
+        
+        this.editors.push({"PD":pd, "KEY":key, "type":metadata});
+        
+      }
     });
+    
 
   }
 }

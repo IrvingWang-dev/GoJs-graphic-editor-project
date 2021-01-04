@@ -6,3 +6,5 @@ export class Screen
     public panelDevices : PanelDevice[];
 }
 
+
+

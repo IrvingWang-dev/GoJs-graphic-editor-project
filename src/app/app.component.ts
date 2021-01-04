@@ -3,6 +3,8 @@ import * as go from 'gojs';
 import { DataSyncService, DiagramComponent, PaletteComponent } from 'gojs-angular';
 import * as _ from 'lodash';
 import { NodeData } from './models/node-data';
+import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { PanelDevice } from './models/PanelDevice';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +12,7 @@ import { NodeData } from './models/node-data';
   styleUrls: ['./app.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent{
 
   newNodeData: NodeData;
   
@@ -20,5 +22,9 @@ export class AppComponent {
     this.nodeData = newNodeData;
   }
 
+  ngOnInit()
+  {
+    
+  }
 }
 

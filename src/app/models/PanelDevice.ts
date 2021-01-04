@@ -1,42 +1,20 @@
+import "reflect-metadata"
+import {Editor} from "./Editor"
 
 export class PanelDevice
 {
-    public x: number;
-    public y: number;
-    public name: string;
-    public width: number;
-    public height: number;
+    @Reflect.metadata(Editor, "number")
+    public x: number = 0;
 
-    public getMetaData():PanelDeviceMetadata
-    {
-        return new PanelDeviceMetadata();
-    }
-    
-}
+    @Reflect.metadata(Editor, "color")
+    public y: number = 0;
 
-export class PanelDeviceMetadata
-{
-    public properties: PanelDeviceProperites[];
+    @Reflect.metadata(Editor, "string")
+    public name: string = "";
 
-    constructor()
-    {
-        this.properties.push(new PanelDeviceProperites("x", "number" ));
-        this.properties.push(new PanelDeviceProperites("y", "number" ));
-        this.properties.push(new PanelDeviceProperites("name", "string" ));
-        this.properties.push(new PanelDeviceProperites("width", "number" ));
-        this.properties.push(new PanelDeviceProperites("height", "number" ));
+    @Reflect.metadata(Editor, "number")
+    public width: number = 0;
 
-    }
-}
-
-export class PanelDeviceProperites
-{
-    public name:string;
-    public type:string;
-
-    constructor(name:string, type:string)
-    {
-        this.name = name;
-        this.type = type;
-    }
+    @Reflect.metadata(Editor, "number")
+    public height: number = 0;    
 }
