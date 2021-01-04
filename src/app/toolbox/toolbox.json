@@ -1,0 +1,12 @@
+{
+    "items":[
+        {
+            "name":"numericEntry",
+            "class":"NumericEntry",
+            "icon":"button"
+        },
+        {
+            
+        }
+    ]
+}

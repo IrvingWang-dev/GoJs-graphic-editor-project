@@ -2,12 +2,19 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { Subscription } from 'rxjs';
 import { NodeData } from 'src/app/models/node-data';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
+import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-property-panel',
   templateUrl: './property-panel.component.html',
   styleUrls: ['./property-panel.component.css']
 })
+
+
+@Injectable({
+  providedIn: 'root',
+})
+
 export class PropertyPanelComponent implements OnInit, OnDestroy {
 
   private defaultProperties: NodeData = {
@@ -95,5 +102,18 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
       color: this.nodeProperties.color
     }
     this.service.addNewNode(newNodeData);
+  }
+
+  public OnUpdate()
+  {
+    selectedDevices = SelectionService.GetSelectionService();
+
+    panelDevice = selectedDevices[0];
+    metaData = panelDevice.GetMetaData();
+
+    metaData.forEach(element => {
+      
+    });
+
   }
 }

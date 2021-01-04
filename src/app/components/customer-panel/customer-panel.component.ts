@@ -201,4 +201,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       model.set(data, 'color', nodeData.color);
     }, 'update node');
   }
+
+  public OpenScreen(screen: Screen) 
+  {
+    // load all panel device and show it
+  }
 }
