@@ -1,10 +1,26 @@
+import { Subject } from "rxjs";
 import { PanelDevice } from "./PanelDevice";
 
 
-export class Screen
+export class PV800Screen
 {
-    public panelDevices : PanelDevice[];
+    public _panelDevices : PanelDevice[] = new Array<PanelDevice>();
+
+    public AddPanelDevice(pd : PanelDevice)
+    {
+        this._panelDevices.push(pd);
+        this.OnPanelDeviceChanged.next(1);
+    }
+
+    public GetAllPanelDevices() : PanelDevice[]
+    {
+        return this._panelDevices;
+    }
+
+    public  OnPanelDeviceChanged : Subject<number> = new Subject<number>();
 }
+
+export var currentScreen : PV800Screen = new PV800Screen();
 
 
 

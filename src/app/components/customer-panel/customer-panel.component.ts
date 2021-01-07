@@ -3,6 +3,7 @@ import * as go from 'gojs';
 import { DataSyncService, DiagramComponent } from 'gojs-angular';
 import { Subscription } from 'rxjs';
 import { NodeData } from 'src/app/models/node-data';
+import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
 
 @Component({
@@ -38,6 +39,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public subscription: Subscription;
 
+  public subscription2: Subscription;
+
   constructor(public service: InteractionProxyService) { }
 
   ngOnInit(): void {
@@ -60,6 +63,11 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         this.addNewNode(nodeData);
       }
     });
+
+    this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (num :number) =>
+      {
+        this.OpenScreen(currentScreen);
+      })
   }
 
   ngOnDestroy(): void {
@@ -202,8 +210,19 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     }, 'update node');
   }
 
-  public OpenScreen(screen: Screen) 
+  public OpenScreen(screen: PV800Screen) 
   {
     // load all panel device and show it
+    screen.GetAllPanelDevices().forEach(pd => {
+      let nodedata = new NodeData();
+      nodedata.height = pd.height;
+      nodedata.width = pd.width;
+      nodedata.left = pd.x;
+      nodedata.top = pd.y;
+      nodedata.label = pd.name;
+      nodedata.key = 123;
+      nodedata.color = 'red';
+      this.addNewNode(nodedata);
+    });
   }
 }
