@@ -1,0 +1,53 @@
+.toolbox-panel {
+    border: 5px solid gray;
+}
+
+/* .button-toolbox button {
+    margin: 5px 5px;
+    background-color: lightgrey; 
+    border: 1px solid black; 
+    border-radius: 5px;
+    color: black; 
+    padding: 10px 24px; 
+    cursor: pointer; 
+    width: 90%; 
+    display: block; 
+}
+
+.button-toolbox button:hover {
+    background-color: #696969;
+} */
+
+.toolboxs {
+    margin: 0 0 2em 0;
+    list-style-type: none;
+    padding: 0;
+    width: 15em;
+  }
+
+.toolbox li {
+    cursor: pointer;
+    position: relative;
+    left: -1em;
+    background-color: #EEE;
+    margin: .5em;
+    padding: .3em 0;
+    height: 1.6em;
+    border-radius: 4px;
+  }
+  
+.toolbox li:hover {
+    color: #607D8B;
+    background-color: #DDD;
+    left: -0.9em;
+  }
+
+.toolbox li.selected {
+    background-color: #CFD8DC;
+    color: white;
+  }
+
+.toolbox li.selected:hover {
+    background-color: #BBD8DC;
+    color: white;
+  }

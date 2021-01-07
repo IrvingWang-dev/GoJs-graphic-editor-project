@@ -1,1 +1,27 @@
-<p>toolbox works!</p>
+<!--<div class="toolbox-panel">
+    <div>
+        <label><b>ToolBox</b></label>
+    </div>
+    <div class="button-toolbox">
+        <button>Numeric Entry</button>
+        <button>Numeric Display</button>
+        <button>Key</button>
+    </div>
+
+</div>-->
+
+<div class="toolbox-panel">
+    <div>
+        <label><b>ToolBox</b></label>
+    </div>
+    <div>
+        <ul class="toolbox">
+            <li *ngFor="let toolBoxItem of toolBoxItems"
+            [class.selected]="toolBoxItem === selectedToolBox"
+            (click)="onSelect(toolBoxItem)">
+                {{toolBoxItem.name}}
+            </li>
+        </ul>
+    </div>
+
+</div>

@@ -4,7 +4,7 @@ import { NodeData } from 'src/app/models/node-data';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
 import { Injectable } from '@angular/core';
 import { PanelDevice } from 'src/app/models/PanelDevice';
-import {SelectionServiceService} from 'src/app/selection-service.service'
+import { SelectionServiceService } from 'src/app/selection-service.service'
 import "reflect-metadata"
 import { Editor } from 'src/app/models/Editor';
 
@@ -39,12 +39,11 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.service.diagramChangedSubject.subscribe((data: NodeData) => {
-      
+
       this.nodeProperties = data;
     });
-
     this.subscription = this.selectionService.OnSelectionChanged.subscribe((data: number) => {
-      
+
       this.OnUpdate();
     });
 
@@ -60,8 +59,8 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
    */
   public addNewNode() {
 
-    document.getElementById('generalPropertyPanel').style.display='block'; 
-    document.getElementById('numericEntryProperty').style.display='none';
+    document.getElementById('generalPropertyPanel').style.display = 'block';
+    document.getElementById('numericEntryProperty').style.display = 'none';
 
     const left = this.nodeProperties.left;
     const top = this.nodeProperties.top;
@@ -80,7 +79,7 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
   /**
    * Update existing node.
    */
-  public updateNewNode(){
+  public updateNewNode() {
 
     const newNodeData = {
       key: this.nodeProperties.key,
@@ -94,13 +93,13 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     this.service.updateNode(newNodeData);
   }
 
-  public onTopEnter(value: string){
+  public onTopEnter(value: string) {
     this.updateNewNode();
   }
 
-  public numericEntry(){
-    document.getElementById('generalPropertyPanel').style.display='none'; 
-    document.getElementById('numericEntryProperty').style.display='block'; 
+  public numericEntry() {
+    document.getElementById('generalPropertyPanel').style.display = 'none';
+    document.getElementById('numericEntryProperty').style.display = 'block';
 
     const left = this.nodeProperties.left;
     const top = this.nodeProperties.top;
@@ -117,23 +116,21 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
 
   public editors = [];
 
-  public OnUpdate()
-  {
+  public OnUpdate() {
     let pd = this.selectionService.selectPanelDevice;
 
     let keys = Object.keys(pd);
 
-    
+
     keys.forEach(key => {
-      if (Reflect.hasMetadata(Editor, pd, key))
-      {
+      if (Reflect.hasMetadata(Editor, pd, key)) {
         let metadata = Reflect.getMetadata(Editor, pd, key);
-        
-        this.editors.push({"PD":pd, "KEY":key, "type":metadata});
-        
+
+        this.editors.push({ "PD": pd, "KEY": key, "type": metadata });
+
       }
     });
-    
+
 
   }
 }

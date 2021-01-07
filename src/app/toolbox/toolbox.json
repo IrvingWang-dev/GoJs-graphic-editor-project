@@ -6,7 +6,15 @@
             "icon":"button"
         },
         {
+            "name": "numericDisplay",
+            "class": "NumericEntry",
+            "icon": "button"
             
+        },
+        {
+            "name": "Key",
+            "class": "Key",
+            "icon": "button"
         }
     ]
 }
