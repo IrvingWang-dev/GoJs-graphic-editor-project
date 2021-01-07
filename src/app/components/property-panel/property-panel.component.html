@@ -1,7 +1,9 @@
 <div class="properties-panel">
     <ng-container *ngFor="let item of editors">
+    <div>
         <app-editor-number *ngIf="item.type=='number'"  [item]="item" ></app-editor-number>
         <app-editor-string *ngIf="item.type=='string'"  [item]="item" ></app-editor-string>
+    </div>
     </ng-container>
    
 </div>

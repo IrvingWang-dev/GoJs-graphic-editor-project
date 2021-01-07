@@ -13,7 +13,7 @@ export class SelectionServiceService {
 
    }
 
-   public OnSelectionChanged : Subject<number>;
+   public OnSelectionChanged : Subject<number> = new Subject<number>();
 
   private _selectedPanelDevice : PanelDevice;
 
