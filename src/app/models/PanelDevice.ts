@@ -1,5 +1,6 @@
 import "reflect-metadata"
 import {Editor} from "./Editor"
+import { currentScreen } from "./Screen";
 
 export class PanelDevice
 {
@@ -17,4 +18,11 @@ export class PanelDevice
 
     @Reflect.metadata(Editor, "number")
     public height: number = 0;    
+    
+    constructor()
+    {
+        this.name = "DefaultName" + currentScreen.pdNumber++;
+    }
 }
+
+

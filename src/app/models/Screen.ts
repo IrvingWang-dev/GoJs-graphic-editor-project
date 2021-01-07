@@ -5,6 +5,7 @@ import { PanelDevice } from "./PanelDevice";
 export class PV800Screen
 {
     public _panelDevices : PanelDevice[] = new Array<PanelDevice>();
+    public pdNumber: number;
 
     public AddPanelDevice(pd : PanelDevice)
     {
