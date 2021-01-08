@@ -1,22 +1,7 @@
 .toolbox-panel {
     border: 5px solid gray;
+    border-radius: 1rem;
 }
-
-/* .button-toolbox button {
-    margin: 5px 5px;
-    background-color: lightgrey; 
-    border: 1px solid black; 
-    border-radius: 5px;
-    color: black; 
-    padding: 10px 24px; 
-    cursor: pointer; 
-    width: 90%; 
-    display: block; 
-}
-
-.button-toolbox button:hover {
-    background-color: #696969;
-} */
 
 .toolboxs {
     margin: 0 0 2em 0;
