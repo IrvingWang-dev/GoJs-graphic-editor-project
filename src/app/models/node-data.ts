@@ -7,4 +7,5 @@ export class NodeData {
     label: string;
     color: string;
     loc?: string;
+    pd?:any;
 }

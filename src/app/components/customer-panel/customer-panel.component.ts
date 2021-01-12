@@ -3,8 +3,10 @@ import * as go from 'gojs';
 import { DataSyncService, DiagramComponent } from 'gojs-angular';
 import { Subscription } from 'rxjs';
 import { NodeData } from 'src/app/models/node-data';
+import { PanelDevice } from 'src/app/models/PanelDevice';
 import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
+import {SelectionServiceService} from 'src/app/selection-service.service';
 
 @Component({
   selector: 'app-customer-panel',
@@ -41,7 +43,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public subscription2: Subscription;
 
-  constructor(public service: InteractionProxyService) { }
+  constructor(public service: InteractionProxyService, public selectionService: SelectionServiceService) { }
 
   ngOnInit(): void {
     this.subscription = this.service.propertiesChangedSubject.subscribe((nodeData: NodeData) => {
@@ -64,9 +66,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     });
 
-    this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (num :number) =>
+    this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (pd :PanelDevice) =>
       {
-        this.OpenScreen(currentScreen);
+        this.AddPanelDevice(pd);
       })
   }
 
@@ -79,7 +81,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     this.diagramPanel = this.myDiagramComponent ? this.myDiagramComponent.diagram : null;
 
     // Selection was changed in diagram.
-    this.diagramPanel.addDiagramListener('ChangedSelection', (event) => {
+    this.diagramPanel.addDiagramListener('ChangedSelection', (event) => 
+    {
       
       if (event.diagram.selection.count === 0 || event.diagram.selection.count > 1) {
         this.selectedNode = null;
@@ -90,6 +93,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       if (node instanceof go.Node) {
         this.selectedNode = node;
         this.service.diagramChanged(this.selectedNode);
+        this.selectionService.selectPanelDevice = node.data.pd;
       } else {
         this.selectedNode = null;
       }
@@ -224,5 +228,19 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       nodedata.color = 'red';
       this.addNewNode(nodedata);
     });
+  }
+
+  public AddPanelDevice(pd: PanelDevice)
+  {
+    let nodedata = new NodeData();
+    nodedata.height = pd.height;
+    nodedata.width = pd.width;
+    nodedata.left = pd.x;
+    nodedata.top = pd.y;
+    nodedata.label = pd.name;
+    nodedata.key = 123;
+    nodedata.color = 'red';
+    nodedata.pd = pd;
+    this.addNewNode(nodedata);
   }
 }

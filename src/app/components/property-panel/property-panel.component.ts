@@ -121,11 +121,11 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
 
     let keys = Object.keys(pd);
 
-
+    this.editors = [];
     keys.forEach(key => {
       if (Reflect.hasMetadata(Editor, pd, key)) {
         let metadata = Reflect.getMetadata(Editor, pd, key);
-
+        
         this.editors.push({ "PD": pd, "KEY": key, "type": metadata });
 
       }

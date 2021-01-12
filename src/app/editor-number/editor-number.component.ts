@@ -9,8 +9,12 @@ export class EditorNumberComponent implements OnInit {
 
   @Input()
   item : Object;
+  
+  //value: number;
 
-  constructor() { }
+  constructor() {
+    //this.value = this.item["PD"][this.item["KEY"]];
+   }
 
   ngOnInit(): void {
     console.log(this.item);

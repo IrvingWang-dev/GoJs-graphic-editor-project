@@ -10,7 +10,7 @@ export class PV800Screen
     public AddPanelDevice(pd : PanelDevice)
     {
         this._panelDevices.push(pd);
-        this.OnPanelDeviceChanged.next(1);
+        this.OnPanelDeviceChanged.next(pd);
     }
 
     public GetAllPanelDevices() : PanelDevice[]
@@ -18,7 +18,7 @@ export class PV800Screen
         return this._panelDevices;
     }
 
-    public  OnPanelDeviceChanged : Subject<number> = new Subject<number>();
+    public  OnPanelDeviceChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
 }
 
 export var currentScreen : PV800Screen = new PV800Screen();
