@@ -7,6 +7,7 @@ import { PanelDevice } from 'src/app/models/PanelDevice';
 import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
 import {SelectionServiceService} from 'src/app/selection-service.service';
+import { PanelDeviceService } from 'src/app/panel-device.service';
 
 @Component({
   selector: 'app-customer-panel',
@@ -43,7 +44,10 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public subscription2: Subscription;
 
-  constructor(public service: InteractionProxyService, public selectionService: SelectionServiceService) { }
+  public subscription3: Subscription;
+
+  constructor(public service: InteractionProxyService, public selectionService: SelectionServiceService,
+    public panelDeviceService: PanelDeviceService) { }
 
   ngOnInit(): void {
     this.subscription = this.service.propertiesChangedSubject.subscribe((nodeData: NodeData) => {
@@ -69,7 +73,15 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (pd :PanelDevice) =>
       {
         this.AddPanelDevice(pd);
-      })
+      });
+
+      this.subscription3 = this.panelDeviceService.OnSelectionChanged.subscribe( (pd : PanelDevice) =>
+       {
+
+            this.updateNodeByPD(pd);
+
+        });
+
   }
 
   ngOnDestroy(): void {
@@ -211,6 +223,35 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       model.set(data, "loc", nodeData.loc);
       model.set(data, 'label', nodeData.label);
       model.set(data, 'color', nodeData.color);
+    }, 'update node');
+  }
+
+    /**
+   * Update existing node.
+   * @param nodeData 
+   * @param index 
+   */
+  public updateNodeByPD(pd: PanelDevice) {
+
+    let nodedata = new NodeData();
+    nodedata.height = pd.height;
+    nodedata.width = pd.width;
+    nodedata.left = pd.x;
+    nodedata.top = pd.y;
+    nodedata.label = pd.name;
+    nodedata.key = 123;
+    nodedata.color = 'red';
+    nodedata.pd = pd;
+    // Use model's commit to update node.
+    this.diagramPanel.model.commit((model) => {
+
+      const data = this.selectedNode.data;
+      // Set size
+      model.set(this.selectedNode, 'desiredSize', new go.Size(Number(nodedata.width), Number(nodedata.height)));
+      // Set position
+      model.set(data, "loc", nodedata.loc);
+      model.set(data, 'label', nodedata.label);
+      model.set(data, 'color', nodedata.color);
     }, 'update node');
   }
 

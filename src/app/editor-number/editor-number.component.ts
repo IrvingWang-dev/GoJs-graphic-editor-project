@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PanelDeviceService } from '../panel-device.service';
 
 @Component({
   selector: 'app-editor-number',
@@ -10,20 +11,24 @@ export class EditorNumberComponent implements OnInit {
   @Input()
   item : Object;
   
-  //value: number;
+  value: number;
 
-  constructor() {
+  constructor(public panelDeviceService : PanelDeviceService) {
     //this.value = this.item["PD"][this.item["KEY"]];
    }
 
   ngOnInit(): void {
     console.log(this.item);
+    this.value = this.item["PD"][this.item["KEY"]];
+    console.log(this.value);
   }
 
   onKey(event: any) { // without type info
     
     this.item["PD"][this.item["KEY"]] = parseInt(event.target.value);
     console.log(this.item);
+
+    this.panelDeviceService.OnSelectionChanged.next(this.item["PD"]);
   }
 
 }
