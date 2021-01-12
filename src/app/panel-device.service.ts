@@ -7,7 +7,7 @@ import { PanelDevice } from './models/PanelDevice';
 })
 export class PanelDeviceService {
 
-  public OnSelectionChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
+  public OnPropertiesChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
 
   constructor() { }
 }

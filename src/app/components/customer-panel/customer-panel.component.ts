@@ -75,7 +75,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         this.AddPanelDevice(pd);
       });
 
-      this.subscription3 = this.panelDeviceService.OnSelectionChanged.subscribe( (pd : PanelDevice) =>
+      this.subscription3 = this.panelDeviceService.OnPropertiesChanged.subscribe( (pd : PanelDevice) =>
        {
 
             this.updateNodeByPD(pd);
