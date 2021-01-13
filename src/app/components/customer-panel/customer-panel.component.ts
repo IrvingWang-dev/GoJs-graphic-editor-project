@@ -41,7 +41,6 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     // { key: 'Delta', text: 'Delta', color: 'pink', loc: '', width: 100, height: 30}
   ];
 
-  public subscription: Subscription;
 
   public subscription2: Subscription;
 
@@ -51,25 +50,6 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     public panelDeviceService: PanelDeviceService) { }
 
   ngOnInit(): void {
-    this.subscription = this.service.propertiesChangedSubject.subscribe((nodeData: NodeData) => {
-
-      let matchedIndex = -1;
-
-      const matchedData = this.diagramNodeData.find((oldNodedata, index, array) => {
-        if(oldNodedata.key === nodeData.key) {
-          matchedIndex = index;
-          return true;
-        } else {
-          return false;
-        }
-      });
-
-      if(matchedData) {
-        this.updateNode(nodeData, matchedIndex);
-      } else {
-        this.addNewNode(nodeData);
-      }
-    });
 
     this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (pd :PanelDevice) =>
       {
@@ -98,7 +78,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngOnDestroy(): void {
-    this.subscription ? this.subscription.unsubscribe() : null;
+    this.subscription2 ? this.subscription2.unsubscribe() : null;
   }
 
   public ngAfterViewInit() {
@@ -233,29 +213,6 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
       diagram.model.addNodeData(nodeData);
     }, 'add new node');
-  }
-
-  /**
-   * Update existing node.
-   * @param nodeData 
-   * @param index 
-   */
-  public updateNode(nodeData: NodeData, index: number) {
-
-    // Use model's commit to update node.
-    this.diagramPanel.model.commit((model) => {
-
-      const data = model.nodeDataArray[index];
-      // Set size
-      //model.set(this.selectedNode, 'desiredSize', new go.Size(Number(nodeData.width), Number(nodeData.height)));
-      // Set position
-      model.set(data, "width", Number(nodeData.width));
-      model.set(this.selectedNode, "height", Number(nodeData.height));
-      model.set(data, "loc", nodeData.loc);
-      model.set(data, 'label', nodeData.label);
-      model.set(data, 'color', nodeData.color);
-      model.raiseDataChanged
-    }, 'update node');
   }
 
     /**
