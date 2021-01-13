@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolBox } from './toolbox';
-import { ToolBoxItems } from './mock-toolbox'; 
 import { currentScreen } from '../models/Screen';
 import { NumericEntry } from '../models/PanelDevices/NumericEntry';
 import { NumericDisplay } from '../models/PanelDevices/NumericDisplay';
+import toolBoxList  from './toolbox.json';
 
 @Component({
   selector: 'app-toolbox',
@@ -12,7 +12,7 @@ import { NumericDisplay } from '../models/PanelDevices/NumericDisplay';
 })
 export class ToolboxComponent implements OnInit {
 
-  toolBoxItems = ToolBoxItems;
+  toolBoxItems = toolBoxList.items;
 
   constructor() { }
 

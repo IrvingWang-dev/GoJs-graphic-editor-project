@@ -7,13 +7,18 @@
         },
         {
             "name": "numericDisplay",
-            "class": "NumericEntry",
+            "class": "NumericDisplay",
             "icon": "button"
             
         },
         {
             "name": "Key",
             "class": "Key",
+            "icon": "button"
+        },
+        {
+            "name": "Memory Push Button",
+            "class": "General",
             "icon": "button"
         }
     ]

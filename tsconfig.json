@@ -25,6 +25,9 @@
       "gojs-angular/*": [
         "dist/gojs-angular/*"
       ]
-    }
+    },
+    
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }
