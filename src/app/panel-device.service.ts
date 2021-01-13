@@ -10,7 +10,7 @@ import { PanelDevice } from './models/PanelDevice';
 
 export class PanelDeviceService {
 
-  public OnPropertiesChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
+  public OnPropertiesChanged : Subject<any> = new Subject<any>();
 
   key : number;
 

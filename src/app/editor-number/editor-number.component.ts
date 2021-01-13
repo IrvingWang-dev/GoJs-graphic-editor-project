@@ -28,7 +28,12 @@ export class EditorNumberComponent implements OnInit {
     this.item["PD"][this.item["KEY"]] = parseInt(event.target.value);
     console.log(this.item);
 
-    this.panelDeviceService.OnPropertiesChanged.next(this.item["PD"]);
+    this.panelDeviceService.OnPropertiesChanged.next({
+      pd: this.item["PD"],
+      propertyName:this.item['KEY'],
+      old:this.value,
+      newValue: parseInt(event.target.value)
+    });
   }
 
 }

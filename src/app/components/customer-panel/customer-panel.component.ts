@@ -76,10 +76,22 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         this.AddPanelDevice(pd);
       });
 
-      this.subscription3 = this.panelDeviceService.OnPropertiesChanged.subscribe( (pd : PanelDevice) =>
+      this.subscription3 = this.panelDeviceService.OnPropertiesChanged.subscribe( (src) =>
        {
+             // Use model's commit to update node.
+            this.diagramPanel.model.commit((model) => {
 
-            this.updateNodeByPD(pd);
+        let linkModal = model as go.GraphLinksModel;
+        let pd = src['pd'] as PanelDevice;
+        let data = linkModal.findNodeDataForKey(pd.key);
+      
+        if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0)
+          model.set(data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
+        else
+          // Set position
+            
+             model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
+            }, 'update node');
 
         });
 
@@ -184,7 +196,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
 
         new go.Binding("width", "width").makeTwoWay(),
-        new go.Binding("height", "height").makeTwoWay()
+        new go.Binding("height", "height").makeTwoWay(),
       );
 
     return dia;
@@ -242,6 +254,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       model.set(data, "loc", nodeData.loc);
       model.set(data, 'label', nodeData.label);
       model.set(data, 'color', nodeData.color);
+      model.raiseDataChanged
     }, 'update node');
   }
 
