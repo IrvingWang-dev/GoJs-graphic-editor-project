@@ -9,7 +9,7 @@ import { PropertyPanelComponent } from './components/property-panel/property-pan
 import { ToolboxComponent } from './toolbox/toolbox.component';
 import { EditorNumberComponent } from './editor-number/editor-number.component';
 import { EditorStringComponent } from './editor-string/editor-string.component';
-
+import { EditorColorComponent } from './editor-color/editor-color.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,8 @@ import { EditorStringComponent } from './editor-string/editor-string.component';
     PropertyPanelComponent,
     ToolboxComponent,
     EditorNumberComponent,
-    EditorStringComponent
+    EditorStringComponent,
+    EditorColorComponent
   ],
   imports: [
     BrowserModule,

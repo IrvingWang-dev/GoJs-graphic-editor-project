@@ -22,7 +22,8 @@ export class PanelDevice
     @Reflect.metadata(Editor, "number")
     public height: number = 40;    
 
-    public color: string = 'red';
+    @Reflect.metadata(Editor, "color")
+    public color: string = '#0000FF';
 
     public key : string | number  = 0;
 
