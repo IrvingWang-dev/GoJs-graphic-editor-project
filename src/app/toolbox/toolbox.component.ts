@@ -3,6 +3,7 @@ import { ToolBox } from './toolbox';
 import { ToolBoxItems } from './mock-toolbox'; 
 import { currentScreen } from '../models/Screen';
 import { NumericEntry } from '../models/PanelDevices/NumericEntry';
+import { NumericDisplay } from '../models/PanelDevices/NumericDisplay';
 
 @Component({
   selector: 'app-toolbox',
@@ -24,6 +25,15 @@ export class ToolboxComponent implements OnInit {
     if (toolBox.class == 'NumericEntry')
     {
       let pd = new NumericEntry();
+
+      currentScreen.AddPanelDevice(pd);
+           
+    }
+
+    if (toolBox.class == 'NumericDisplay')
+    {
+      let pd = new NumericDisplay();
+
       currentScreen.AddPanelDevice(pd);
            
     }

@@ -1,8 +1,8 @@
 import { Editor } from "../Editor";
 import { PanelDevice } from "../PanelDevice";
 
-export class NumericEntry extends PanelDevice 
+export class NumericDisplay extends PanelDevice 
 {
     @Reflect.metadata(Editor, "string")
-    public writeTag : string = "";
+    public readTag : string = "";
 }

@@ -41,8 +41,8 @@ export class InteractionProxyService {
    */
   public diagramChanged(node: go.Node) {
     
-    const data = this.extractDataFromNode(node);
-    this.diagramChangedSubject.next(data);
+    //const data = this.extractDataFromNode(node);
+    //this.diagramChangedSubject.next(data);
   }
 
   /**

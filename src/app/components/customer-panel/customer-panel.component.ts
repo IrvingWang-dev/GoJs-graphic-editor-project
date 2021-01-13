@@ -8,6 +8,7 @@ import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
 import {SelectionServiceService} from 'src/app/selection-service.service';
 import { PanelDeviceService } from 'src/app/panel-device.service';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-customer-panel',
@@ -105,7 +106,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       if (node instanceof go.Node) {
         this.selectedNode = node;
         this.service.diagramChanged(this.selectedNode);
-        this.selectionService.selectPanelDevice = node.data.pd;
+        this.selectionService.selectPanelDevice = node.data as PanelDevice;
       } else {
         this.selectedNode = null;
       }
@@ -115,17 +116,30 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
     // Size of node was changed.
     this.diagramPanel.addDiagramListener('PartResized', (event) => {
-      this.service.diagramChanged(this.selectedNode);
+      let pd = this.selectionService.selectPanelDevice;
+
+
+      // this is only a update to tell others update the properties, this may not very good!
+      this.selectionService.OnSelectionChanged.next(1);
     });
 
     // Node was moved.
     this.myDiagramComponent.diagram.addDiagramListener('SelectionMoved', (event) => {
-      this.service.diagramChanged(this.selectedNode);
+      let pd = this.selectionService.selectPanelDevice;
+      pd.x = go.Point.parse(pd.location).x;
+      pd.y = go.Point.parse(pd.location).y;
+
+      // this is only a update to tell others update the properties, this may not very good!
+      this.selectionService.OnSelectionChanged.next(1);
     });
 
     // Text was changed
     this.myDiagramComponent.diagram.addDiagramListener('TextEdited', (event) => {
-      this.service.diagramChanged(this.selectedNode);
+      let pd = this.selectionService.selectPanelDevice;
+
+
+      // this is only a update to tell others update the properties, this may not very good!
+      this.selectionService.OnSelectionChanged.next(1);
     });
 
     // this.diagramPanel.addDiagramListener('ObjectSingleClicked', (event) => {
@@ -163,11 +177,14 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           { margin: 0, editable: true},
           // UI-Data two way binding.
           // Two way binding makes label be changed when editing.
-          new go.Binding('text', "label").makeTwoWay(),
+          new go.Binding('text', "caption").makeTwoWay(),
         ),
         // Node is derived from Part, so location is in Node. Need to bind location here.
         // Two way binding makes location data be changed when moving node.
-        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify)
+        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
+
+        new go.Binding("width", "width").makeTwoWay(),
+        new go.Binding("height", "height").makeTwoWay()
       );
 
     return dia;
@@ -218,8 +235,10 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
       const data = model.nodeDataArray[index];
       // Set size
-      model.set(this.selectedNode, 'desiredSize', new go.Size(Number(nodeData.width), Number(nodeData.height)));
+      //model.set(this.selectedNode, 'desiredSize', new go.Size(Number(nodeData.width), Number(nodeData.height)));
       // Set position
+      model.set(data, "width", Number(nodeData.width));
+      model.set(this.selectedNode, "height", Number(nodeData.height));
       model.set(data, "loc", nodeData.loc);
       model.set(data, 'label', nodeData.label);
       model.set(data, 'color', nodeData.color);
@@ -233,25 +252,18 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
    */
   public updateNodeByPD(pd: PanelDevice) {
 
-    let nodedata = new NodeData();
-    nodedata.height = pd.height;
-    nodedata.width = pd.width;
-    nodedata.left = pd.x;
-    nodedata.top = pd.y;
-    nodedata.label = pd.name;
-    nodedata.key = 123;
-    nodedata.color = 'red';
-    nodedata.pd = pd;
     // Use model's commit to update node.
     this.diagramPanel.model.commit((model) => {
 
-      const data = this.selectedNode.data;
-      // Set size
-      model.set(this.selectedNode, 'desiredSize', new go.Size(Number(nodedata.width), Number(nodedata.height)));
+      let linkModal = model as go.GraphLinksModel;
+      let data = linkModal.findNodeDataForKey(pd.key);
+      
+      model.set(data, "width", pd.width);
+      model.set(data, "height", pd.height);
       // Set position
-      model.set(data, "loc", nodedata.loc);
-      model.set(data, 'label', nodedata.label);
-      model.set(data, 'color', nodedata.color);
+      model.set(data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
+      model.set(data, "caption", pd.caption);
+      model.set(data, 'color', 'red');
     }, 'update node');
   }
 
@@ -259,29 +271,26 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
   {
     // load all panel device and show it
     screen.GetAllPanelDevices().forEach(pd => {
-      let nodedata = new NodeData();
-      nodedata.height = pd.height;
-      nodedata.width = pd.width;
-      nodedata.left = pd.x;
-      nodedata.top = pd.y;
-      nodedata.label = pd.name;
-      nodedata.key = 123;
-      nodedata.color = 'red';
-      this.addNewNode(nodedata);
+      this.AddPanelDevice(pd);
     });
   }
 
   public AddPanelDevice(pd: PanelDevice)
   {
-    let nodedata = new NodeData();
-    nodedata.height = pd.height;
-    nodedata.width = pd.width;
-    nodedata.left = pd.x;
-    nodedata.top = pd.y;
-    nodedata.label = pd.name;
-    nodedata.key = 123;
-    nodedata.color = 'red';
-    nodedata.pd = pd;
-    this.addNewNode(nodedata);
+    this.diagramPanel.commit((diagram) => {
+
+      diagram.model.addNodeData(pd);
+      
+    }, 'add new node');
+
+   
+
+    this.diagramPanel.commit((diagram) => {
+      let linkModal = diagram.model as go.GraphLinksModel;
+      let key = linkModal.getKeyForNodeData(pd);
+      pd.key = key;
+    }, 'set key');
   }
+
+
 }
