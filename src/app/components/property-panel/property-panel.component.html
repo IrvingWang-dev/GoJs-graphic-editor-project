@@ -2,6 +2,9 @@
     <div>
         <label><b>Property Panel</b></label>
     </div>
+    <div class="panelDeviceProperty">
+        <label><b>{{pdProeprty}}</b></label>
+    </div>
     <ng-container *ngFor="let item of editors">
     <div class="fields">
         <app-editor-number *ngIf="item.type=='number'"  [item]="item" ></app-editor-number>

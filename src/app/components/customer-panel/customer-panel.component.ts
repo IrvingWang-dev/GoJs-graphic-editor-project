@@ -162,8 +162,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           resizable: true,
         },
         $(go.Shape, 'Rectangle', 
-          { stroke: 'blue'},
-          new go.Binding('fill', 'color')
+          //{ stroke: 'blue'},
+          new go.Binding('fill', 'color'),
+          new go.Binding('stroke', 'borderColor')
         ),
         $(go.TextBlock, 
           { margin: 0, editable: true},
@@ -252,8 +253,6 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       diagram.model.addNodeData(pd);
       
     }, 'add new node');
-
-   
 
     this.diagramPanel.commit((diagram) => {
       let linkModal = diagram.model as go.GraphLinksModel;
