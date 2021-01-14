@@ -161,10 +161,11 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         {
           resizable: true,
         },
-        $(go.Shape, 'Rectangle', 
+        $(go.Shape, 
           //{ stroke: 'blue'},
           new go.Binding('fill', 'color'),
-          new go.Binding('stroke', 'borderColor')
+          new go.Binding('stroke', 'borderColor'),
+          new go.Binding('figure', 'shape')
         ),
         $(go.TextBlock, 
           { margin: 0, editable: true},

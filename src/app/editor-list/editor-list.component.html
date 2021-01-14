@@ -1,0 +1,8 @@
+<span class="editor-list">
+    <label for="property">{{item.KEY}}</label>
+    <select (change)="onSelect($event)" ngModel="{{value}}">
+        <ng-container *ngFor="let item of optionList">
+            <option >{{item}}</option>
+        </ng-container>   
+    </select>
+</span>

@@ -10,6 +10,7 @@ import { ToolboxComponent } from './toolbox/toolbox.component';
 import { EditorNumberComponent } from './editor-number/editor-number.component';
 import { EditorStringComponent } from './editor-string/editor-string.component';
 import { EditorColorComponent } from './editor-color/editor-color.component';
+import { EditorListComponent } from './editor-list/editor-list.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { EditorColorComponent } from './editor-color/editor-color.component';
     ToolboxComponent,
     EditorNumberComponent,
     EditorStringComponent,
-    EditorColorComponent
+    EditorColorComponent,
+    EditorListComponent
   ],
   imports: [
     BrowserModule,
