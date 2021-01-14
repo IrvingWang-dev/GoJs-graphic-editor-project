@@ -171,6 +171,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           // UI-Data two way binding.
           // Two way binding makes label be changed when editing.
           new go.Binding('text', "caption").makeTwoWay(),
+          new go.Binding('stroke', 'textColor').makeTwoWay()
         ),
         // Node is derived from Part, so location is in Node. Need to bind location here.
         // Two way binding makes location data be changed when moving node.
@@ -251,6 +252,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     this.diagramPanel.commit((diagram) => {
 
       diagram.model.addNodeData(pd);
+
       
     }, 'add new node');
 
@@ -258,7 +260,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       let linkModal = diagram.model as go.GraphLinksModel;
       let key = linkModal.getKeyForNodeData(pd);
       pd.key = key;
+      diagram.select(diagram.findNodeForKey(key));
     }, 'set key');
+
   }
 
 
