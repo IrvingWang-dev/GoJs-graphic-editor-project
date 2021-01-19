@@ -1,0 +1,5 @@
+{
+    "shape":["Rectangl", "RoundedRectangle", "Ellipse", "Circle"],   
+    "fontName":["Arial", "Courier New", "Gulim", "GulimChe", "Simsun", "NSimsun", "Tahoma"]
+}
+

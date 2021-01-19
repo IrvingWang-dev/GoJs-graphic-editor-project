@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PanelDeviceService } from '../panel-device.service';
+import listOption from './optionList.json';
 
 @Component({
   selector: 'app-editor-list',
@@ -12,12 +13,20 @@ export class EditorListComponent implements OnInit {
   item : Object;
   value: string;
 
+  selectItems = listOption;
+  
+
   constructor(public panelDeviceService : PanelDeviceService) { }
   public optionList = [];
 
   ngOnInit(): void {
-    this.optionList = ["Rectangle", "Square", "RoundedRectangle", "Border", "Ellipse", "Circle", "TriangleRight", "TriangleDown", "TriangleLeft", "TriangleUp", "Triangle", "Diamond", "LineH", "LineV", "None", "BarH", "BarV", "MinusLine", "PlusLine", "XLine"];
     this.value = this.item["PD"][this.item["KEY"]];
+    this.optionList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
+
+    // this.selectItems.forEach(listObject => {
+    //  console.log(listObject.name)
+      
+    // });
   }
 
   onSelect(event: any) {
