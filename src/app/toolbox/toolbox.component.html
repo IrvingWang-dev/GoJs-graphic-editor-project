@@ -14,10 +14,12 @@
     <div>
         <label><b>ToolBox</b></label>
     </div>
-    <div>
+    <div cdkDropList (cdkDropListDropped)="drop($event)">
         <ul class="toolbox">
             <li *ngFor="let toolBoxItem of toolBoxItems"
-            (click)="onSelect(toolBoxItem)">
+            (click)="onSelect(toolBoxItem)"
+            cdkDrag (mousedown) = "dragStart(toolBoxItem)" (mouseup)="dragEnd()"
+            >
                 {{toolBoxItem.name}}
             </li>
         </ul>

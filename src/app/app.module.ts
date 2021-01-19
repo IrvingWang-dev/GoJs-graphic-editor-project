@@ -10,6 +10,10 @@ import { ToolboxComponent } from './toolbox/toolbox.component';
 import { EditorNumberComponent } from './editor-number/editor-number.component';
 import { EditorStringComponent } from './editor-string/editor-string.component';
 import { EditorColorComponent } from './editor-color/editor-color.component';
+import { ScreenEditorComponent } from './screen-editor/screen-editor.component';
+import { SelectedViewComponent } from './selected-view/selected-view.component';
+
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -19,12 +23,15 @@ import { EditorColorComponent } from './editor-color/editor-color.component';
     ToolboxComponent,
     EditorNumberComponent,
     EditorStringComponent,
-    EditorColorComponent
+    EditorColorComponent,
+    ScreenEditorComponent,
+    SelectedViewComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    GojsAngularModule
+    GojsAngularModule,
+    DragDropModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

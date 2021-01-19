@@ -5,6 +5,7 @@ import { currentScreen } from "./Screen";
 export class PanelDevice
 {
     @Reflect.metadata(Editor, "number")
+    //@Reflect.metadata(max, 100)
     public x: number = 0;
 
     @Reflect.metadata(Editor, "number")
@@ -28,6 +29,9 @@ export class PanelDevice
     public key : string | number  = 0;
 
     public location : string = "";
+
+    public posstyle = "";
+    public selected:string = "hide";
     
     constructor()
     {
