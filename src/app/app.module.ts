@@ -6,15 +6,15 @@ import { AppComponent } from './app.component';
 
 import { CustomerPanelComponent } from './components/customer-panel/customer-panel.component';
 import { PropertyPanelComponent } from './components/property-panel/property-panel.component';
-import { ToolboxComponent } from './toolbox/toolbox.component';
-import { EditorNumberComponent } from './editor-number/editor-number.component';
-import { EditorStringComponent } from './editor-string/editor-string.component';
-import { EditorColorComponent } from './editor-color/editor-color.component';
-import { ScreenEditorComponent } from './screen-editor/screen-editor.component';
-import { SelectedViewComponent } from './selected-view/selected-view.component';
+import { ToolboxComponent } from './components/toolbox/toolbox.component';
+import { EditorNumberComponent } from './components/editor-number/editor-number.component';
+import { EditorStringComponent } from './components/editor-string/editor-string.component';
+import { EditorColorComponent } from './components/editor-color/editor-color.component';
+import { ScreenEditorComponent } from './components/screen-editor/screen-editor.component';
+import { SelectedViewComponent } from './components/selected-view/selected-view.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { EditorListComponent } from './editor-list/editor-list.component';
+import { EditorListComponent } from './components/editor-list/editor-list.component';
 
 @NgModule({
   declarations: [

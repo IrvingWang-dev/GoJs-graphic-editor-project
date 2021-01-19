@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolBox } from './toolbox';
-import { currentScreen } from '../models/Screen';
-import { NumericEntry } from '../models/PanelDevices/NumericEntry';
-import { NumericDisplay } from '../models/PanelDevices/NumericDisplay';
+import { currentScreen } from '../../models/Screen';
+import { NumericEntry } from '../../models/PanelDevices/NumericEntry';
+import { NumericDisplay } from '../../models/PanelDevices/NumericDisplay';
 import toolBoxList  from './toolbox.json';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { CursorToolService } from '../cursor-tool.service';
+import { CursorToolService } from '../../services/cursor-tool.service';
 
 @Component({
   selector: 'app-toolbox',

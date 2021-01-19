@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { PanelDevice } from './models/PanelDevice';
+import { PanelDevice } from '../models/PanelDevice';
 
 @Injectable({
   providedIn: 'root'

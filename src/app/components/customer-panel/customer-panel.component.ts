@@ -6,8 +6,8 @@ import { NodeData } from 'src/app/models/node-data';
 import { PanelDevice } from 'src/app/models/PanelDevice';
 import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
-import {SelectionServiceService} from 'src/app/selection-service.service';
-import { PanelDeviceService } from 'src/app/panel-device.service';
+import {SelectionServiceService} from 'src/app/services/selection-service.service';
+import { PanelDeviceService } from 'src/app/services/panel-device.service';
 import { ThisReceiver } from '@angular/compiler';
 
 @Component({

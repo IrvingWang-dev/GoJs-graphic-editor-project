@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PanelDeviceService } from '../panel-device.service';
+import { PanelDeviceService } from '../../services/panel-device.service';
 import listOption from './optionList.json';
 
 @Component({

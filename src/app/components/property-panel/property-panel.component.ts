@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { SelectionServiceService } from 'src/app/selection-service.service'
+import { SelectionServiceService } from 'src/app/services/selection-service.service'
 import "reflect-metadata"
 import { Editor } from 'src/app/models/Editor';
 

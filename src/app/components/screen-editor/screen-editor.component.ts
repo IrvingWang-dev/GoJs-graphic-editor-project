@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CursorToolService } from '../cursor-tool.service';
-import { PanelDevice } from '../models/PanelDevice';
-import { currentScreen } from '../models/Screen';
-import { PanelDeviceService } from '../panel-device.service';
-import { SelectionServiceService } from '../selection-service.service';
+import { CursorToolService } from '../../services/cursor-tool.service';
+import { PanelDevice } from '../../models/PanelDevice';
+import { currentScreen } from '../../models/Screen';
+import { PanelDeviceService } from '../../services/panel-device.service';
+import { SelectionServiceService } from '../../services/selection-service.service';
 
 @Component({
   selector: 'app-screen-editor',
