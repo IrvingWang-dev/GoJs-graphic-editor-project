@@ -2,28 +2,26 @@ import { Component, Input, OnInit } from '@angular/core';
 import { PanelDeviceService } from '../panel-device.service';
 
 @Component({
-  selector: 'app-editor-color',
-  templateUrl: './editor-color.component.html',
-  styleUrls: ['./editor-color.component.css']
+  selector: 'app-editor-list',
+  templateUrl: './editor-list.component.html',
+  styleUrls: ['./editor-list.component.css']
 })
-export class EditorColorComponent implements OnInit {
+export class EditorListComponent implements OnInit {
 
   @Input()
   item : Object;
-  value: number;
+  value: string;
 
-  constructor(public panelDeviceService : PanelDeviceService) {
-   }
+  constructor(public panelDeviceService : PanelDeviceService) { }
+  public optionList = [];
 
   ngOnInit(): void {
-    console.log(this.item);
+    this.optionList = ["Rectangle", "Square", "RoundedRectangle", "Border", "Ellipse", "Circle", "TriangleRight", "TriangleDown", "TriangleLeft", "TriangleUp", "Triangle", "Diamond", "LineH", "LineV", "None", "BarH", "BarV", "MinusLine", "PlusLine", "XLine"];
     this.value = this.item["PD"][this.item["KEY"]];
-    console.log(this.value);
   }
 
   onSelect(event: any) {
     this.item["PD"][this.item["KEY"]] = event.target.value;
-    this.value = event.target.value;
     console.log(this.item);
 
     this.panelDeviceService.OnPropertiesChanged.next({
@@ -32,7 +30,6 @@ export class EditorColorComponent implements OnInit {
       old:this.value,
       newValue: event.target.value
     });
-
   }
 
 }

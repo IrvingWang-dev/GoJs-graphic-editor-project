@@ -13,4 +13,7 @@ export class NumericDisplay extends PanelDevice
 
     @Reflect.metadata(Editor, "color")
     public frontcolor : string = "";
+    
+    @Reflect.metadata(Editor, "list")
+    public shape : string = "Rectangle";
 }

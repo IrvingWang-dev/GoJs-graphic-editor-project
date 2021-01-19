@@ -39,9 +39,14 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
    * Update existing node.
    */
   public editors = [];
+  public pdProeprty: string = '';
 
   public OnUpdate() {
     let pd = this.selectionService.selectPanelDevice;
+
+    this.pdProeprty = pd.constructor.name;
+    if (this.pdProeprty.localeCompare('PanelDevice') == 0) 
+        this.pdProeprty = ''; 
 
     let keys = Object.keys(pd);
 
