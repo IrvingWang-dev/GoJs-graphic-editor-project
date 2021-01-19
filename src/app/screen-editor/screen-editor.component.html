@@ -1,0 +1,11 @@
+<div>
+    <div class="screen_editor boundary" (mouseup)="onDropEnd($event)">
+        <div class="background" (click)="onlost()"></div>
+        <div *ngFor="let device of PanelDevices" cdkDrag class="paneldevice" cdkDragBoundary=".boundary"
+        
+            (click)="onfocus(device)" [style]="device.posstyle">
+            {{device.caption}}
+            <app-selected-view class="{{device.selected}}"></app-selected-view>
+        </div>
+    </div>
+</div>

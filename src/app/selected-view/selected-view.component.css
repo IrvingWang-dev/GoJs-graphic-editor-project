@@ -1,0 +1,62 @@
+.point{
+    width: 6px;
+    height: 6px;
+    background-color: white;
+    border: 1px gray solid;
+}
+
+.selectedview{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+}
+
+.left-top{
+    position: absolute;
+    left: -3px;
+    top: -3px;
+}
+
+.left-center{
+    position: absolute;
+    left: -3px;
+    top: calc(50% - 3px);
+}
+
+.left-bottom{
+    position: absolute;
+    left: -3px;
+    bottom: -3px;
+}
+
+.center-top{
+    position: absolute;
+    left: calc(50% - 3px);
+    top: -3px;
+}
+
+.center-bottom{
+    position: absolute;
+    left: calc(50% - 3px);
+    bottom: -3px;
+}
+
+.right-top{
+    position: absolute;
+    right: -3px;
+    top: -3px;
+}
+
+.right-center{
+    position: absolute;
+    right: -3px;
+    top: calc(50% - 3px);
+}
+
+.right-bottom{
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+}

@@ -1,0 +1,31 @@
+.screen_editor{
+    position: absolute;
+    width: 700px;
+    height: 300px;
+
+
+    background: rgb(206, 200, 200);
+}
+
+.paneldevice{
+    width: 100px;
+    height: 50px;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    line-height: 50px;
+    position:absolute;
+    cursor: move;
+}
+
+.hide{
+    display: none;
+}
+
+.background{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+}
