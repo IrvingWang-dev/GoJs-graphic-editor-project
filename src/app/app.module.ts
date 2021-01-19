@@ -10,14 +10,11 @@ import { ToolboxComponent } from './toolbox/toolbox.component';
 import { EditorNumberComponent } from './editor-number/editor-number.component';
 import { EditorStringComponent } from './editor-string/editor-string.component';
 import { EditorColorComponent } from './editor-color/editor-color.component';
-<<<<<<< HEAD
 import { ScreenEditorComponent } from './screen-editor/screen-editor.component';
 import { SelectedViewComponent } from './selected-view/selected-view.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-=======
 import { EditorListComponent } from './editor-list/editor-list.component';
->>>>>>> b32c444dc58f12e5819769169ecd8449268683f3
 
 @NgModule({
   declarations: [
