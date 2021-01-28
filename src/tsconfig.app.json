@@ -6,8 +6,13 @@
     "experimentalDecorators": true,
     "types": []
   },
+  "include": [
+    "../node_modules/gojs/extensionsTS/*.ts",
+    "main.ts",
+    "polyfills.ts"
+  ],
   "exclude": [
     "test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
   ]
 }

@@ -6,6 +6,11 @@ import { NumericDisplay } from '../../models/PanelDevices/NumericDisplay';
 import toolBoxList  from './toolbox.json';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CursorToolService } from '../../services/cursor-tool.service';
+import { GojsToolService } from '../../services/gojs-tool.service';
+import { Polygon } from 'src/app/models/PanelDevices/Polygon';
+import { Polyline } from 'src/app/models/PanelDevices/Polyline';
+import { FreeForm } from 'src/app/models/PanelDevices/FreeForm';
+
 
 @Component({
   selector: 'app-toolbox',
@@ -16,7 +21,7 @@ export class ToolboxComponent implements OnInit {
 
   toolBoxItems = toolBoxList.items;
 
-  constructor(public cursorTool: CursorToolService) { }
+  constructor(public cursorTool: CursorToolService, public gojsToolService: GojsToolService) { }
 
   ngOnInit(): void {
     
@@ -24,22 +29,47 @@ export class ToolboxComponent implements OnInit {
 
   onSelect(toolBox: ToolBox): void {
 
-    if (toolBox.class == 'NumericEntry')
-    {
-      let pd = new NumericEntry();
+    // if (toolBox.class == 'NumericEntry')
+    // {
+    //   let pd = new NumericEntry();
+    //   currentScreen.AddPanelDevice(pd);
+    // }
 
-      currentScreen.AddPanelDevice(pd);
-           
+    switch (toolBox.class) {
+      case 'NumericEntry': {
+        let pd = new NumericEntry();
+        currentScreen.AddPanelDevice(pd);
+        break;
+      }
+      case 'NumericDisplay': {
+        let pd = new NumericDisplay();
+        currentScreen.AddPanelDevice(pd);
+         break;
+      }
+      case 'Polygon': {
+        let pd = new Polygon();
+        this.gojsToolService.isPolygonToolEnabled = true;
+        this.gojsToolService.OnGoJsToolEnabled.next(pd);
+        break;
+      }
+      case 'Polyline': {
+        let pd = new Polyline();
+        this.gojsToolService.isPolygonToolEnabled = true;
+        this.gojsToolService.isPolylienToolEnabled = true;
+        this.gojsToolService.OnGoJsToolEnabled.next(pd);
+        break;
+      }
+      case 'FreeForm': {
+        let pd = new FreeForm();
+        this.gojsToolService.isFreehandToolEnabled = true;
+        this.gojsToolService.OnGoJsToolEnabled.next(pd);
+        break;
+      }
+      default: {
+        console.log(toolBox.name);
+        break;
+      }
     }
-
-    if (toolBox.class == 'NumericDisplay')
-    {
-      let pd = new NumericDisplay();
-
-      currentScreen.AddPanelDevice(pd);
-           
-    }
-    console.log(toolBox.name);
   }
 
   dragStart(toolBox: ToolBox) {

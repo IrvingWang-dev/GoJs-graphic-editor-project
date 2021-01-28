@@ -15,6 +15,7 @@ import { SelectedViewComponent } from './components/selected-view/selected-view.
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EditorListComponent } from './components/editor-list/editor-list.component';
+import { RightclickContextComponent } from './components/rightclick-context/rightclick-context.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { EditorListComponent } from './components/editor-list/editor-list.compon
     EditorColorComponent,
     ScreenEditorComponent,
     SelectedViewComponent,
-    EditorListComponent
+    EditorListComponent,
+    RightclickContextComponent
   ],
   imports: [
     BrowserModule,

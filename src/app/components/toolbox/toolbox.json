@@ -20,6 +20,21 @@
             "name": "Memory Push Button",
             "class": "General",
             "icon": "button"
+        },
+        {
+            "name": "Polygon",
+            "class": "Polygon",
+            "icon": "button"
+        },
+        {
+            "name": "Polyline",
+            "class": "Polyline",
+            "icon": "button"
+        },
+        {
+            "name": "Free Form",
+            "class": "FreeForm",
+            "icon": "button"
         }
     ]
 }
