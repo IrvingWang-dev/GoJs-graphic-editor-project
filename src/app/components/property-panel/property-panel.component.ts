@@ -45,8 +45,12 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
     let pd = this.selectionService.selectPanelDevice;
 
     this.pdProeprty = pd.constructor.name;
-    if (this.pdProeprty.localeCompare('PanelDevice') == 0) 
-        this.pdProeprty = ''; 
+    if (this.pdProeprty.localeCompare('PanelDevice') == 0) {
+      this.pdProeprty = ''; 
+    }
+    else if (Array.isArray(pd.key)){
+      this.pdProeprty = 'PanelDevice';
+    }
 
     let keys = Object.keys(pd);
 
@@ -56,7 +60,6 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
         let metadata = Reflect.getMetadata(Editor, pd, key);
         
         this.editors.push({ "PD": pd, "KEY": key, "type": metadata });
-
       }
     });
 

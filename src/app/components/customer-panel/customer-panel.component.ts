@@ -13,6 +13,7 @@ import { FreehandDrawingTool } from 'node_modules/gojs/extensionsTS/FreehandDraw
 import { PolygonDrawingTool } from 'node_modules/gojs/extensionsTS/PolygonDrawingTool';
 import { GojsToolService } from 'src/app/services/gojs-tool.service';
 import { RightclickContextService } from 'src/app/services/rightclick-context.service';
+import { PRIMARY_OUTLET } from '@angular/router';
 
 @Component({
   selector: 'app-customer-panel',
@@ -68,20 +69,32 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
         let linkModal = model as go.GraphLinksModel;
         let pd = src['pd'] as PanelDevice;
-        let data = linkModal.findNodeDataForKey(pd.key);
+        var nodeKeys = pd.key;
 
-        if (data.constructor.name.localeCompare('Object') == 0){
-          data = pd;
+        if (Array.isArray(nodeKeys)){
+          nodeKeys.forEach((key) => {
+            model.nodeDataArray.forEach((nodeData => {
+              if (nodeData['key'] === key){
+                if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0){
+                  nodeData['location'] = go.Point.stringify(new go.Point(pd.x,pd.y));
+                }     
+                else{
+                  nodeData[src['propertyName']] = src['newValue'];
+                  model.raiseDataChanged(nodeData, src['propertyName'], src['old'], src['newValue']);
+                }
+              }
+            }))
+          });
+          return;
         }
-      
+
+        let data = linkModal.findNodeDataForKey(pd.key);     
         if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0)
           model.set(data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
         else
-          // Set position
-            
-             model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
+          // Set position          
+           model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
             }, 'update node');
-
     });
 
     this.subscription4 = this.rightclickContextService.OnRightClickContextSelect.subscribe( (selection:string) => 
@@ -106,22 +119,23 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       this.polygonDrawingTool = polygonTool;
       polygonTool.isEnabled = this.gojsToolService.isPolygonToolEnabled;
       polygonTool.isPolygon = true;
-      polygonTool.archetypePartData.fill = "blue";
       this.pds = pd;
-      
+
       if (this.gojsToolService.isPolylienToolEnabled){
         polygonTool.isPolygon = !this.gojsToolService.isPolylienToolEnabled;
-        polygonTool.archetypePartData.fill = "transparent";
+        polygonTool.archetypePartData.color = "transparent";
       }
       //Enabled FreenhandDrawingTool
-      var freehandTool = this.diagramPanel.toolManager.findTool("FreehandDrawing");
+      var freehandTool = this.diagramPanel.toolManager.findTool("FreehandDrawing") as FreehandDrawingTool;
+      freehandTool.archetypePartData.color = "transparent";
       this.freehandDrawingTool = freehandTool;
       freehandTool.isEnabled = this.gojsToolService.isFreehandToolEnabled;
+      
       //initialize 
       this.gojsToolService.isPolygonToolEnabled = false;
       this.gojsToolService.isPolylienToolEnabled = false;
       this.gojsToolService.isFreehandToolEnabled = false;
-    })
+    })    
   }
 
   ngOnDestroy(): void {
@@ -131,23 +145,50 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
   public ngAfterViewInit() {
 
     this.diagramPanel = this.myDiagramComponent ? this.myDiagramComponent.diagram : null;
+    var a = this.diagramPanel.toolManager.mouseUpTools;
 
     // Selection was changed in diagram.
     this.diagramPanel.addDiagramListener('ChangedSelection', (event) => 
     { 
-      if (event.diagram.selection.count === 0 || event.diagram.selection.count > 1) {
+      if (event.diagram.selection.count === 0) {
         this.selectedNode = null;
         return;
       } 
+      else if (event.diagram.selection.count > 1){
+        var commonProperties = [];
+        var commonObject = new PanelDevice();
+        var nodeKeys = [];
+        var protoType: Object;
+        
+        event.diagram.selection.each((node: go.Node)=> {
+          commonProperties.push(Object.keys(node.data));
+          nodeKeys.push(node.data.key);
+          commonObject = JSON.parse(JSON.stringify(node.data));
+          protoType = Object.getPrototypeOf(node.data);
+        })
+
+         var result = commonProperties.shift().filter(function(v) {
+          return commonProperties.every(function(a) {
+              return a.indexOf(v) !== -1;
+          });
+        });
+
+        Object.keys(commonObject).forEach((key) => {
+          if(result.indexOf(key) === -1){
+            delete commonObject[key];
+          }else if (key.localeCompare('key') == 0){
+            commonObject[key] = nodeKeys;
+          }});
+        
+        Object.setPrototypeOf(commonObject, protoType);   
+        this.selectionService.selectPanelDevice = commonObject;
+        return;
+      }
       // Only handle one node for properties panel.
       const node = event.diagram.selection.first();
       if (node instanceof go.Node) {
+        
         this.selectedNode = node;
-        if (node.data.constructor.name.localeCompare('Object') == 0){
-          this.pds.key = node.data.key;
-          this.pds.location = node.data.location;
-          node.data = this.pds;
-        }
         this.service.diagramChanged(this.selectedNode);
         this.selectionService.selectPanelDevice = node.data as PanelDevice;
       }
@@ -159,6 +200,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     // Size of node was changed.
     this.diagramPanel.addDiagramListener('PartResized', (event) => {
       let pd = this.selectionService.selectPanelDevice;
+      pd.width = this.selectedNode.actualBounds.width;
+      pd.height = this.selectedNode.actualBounds.height;
       // this is only a update to tell others update the properties, this may not very good!
       this.selectionService.OnSelectionChanged.next(1);
     });
@@ -190,6 +233,10 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     this.myDiagramComponent.diagram.addDiagramListener('BackgroundSingleClicked', (event) => {
       var contextMenuDiv = document.getElementById("context");
       contextMenuDiv.style.display = "none";
+    });
+
+    window.addEventListener("mouseup", (event)=>{
+      this.SelectToolCreateNode(this.freehandDrawingTool);
     });
 
   } 
@@ -253,19 +300,19 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
           new go.Binding("angle").makeTwoWay(),
           new go.Binding("geometryString", "geo").makeTwoWay(),
-          new go.Binding("fill", "fill"),
+          new go.Binding("fill", "color"),
           new go.Binding("stroke", "lineColor"),
-          new go.Binding("strokeWidth", "lineWidth")),
+          new go.Binding("strokeWidth", "lineWidth"),
+          new go.Binding("width", "width").makeTwoWay(),
+          new go.Binding("height", "height").makeTwoWay()),
 
-          new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
-          // new go.Binding("width", "width").makeTwoWay(),
-          // new go.Binding("height", "height").makeTwoWay(),
+          new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify)
       ));
 
       var polygonTool = new PolygonDrawingTool();
       polygonTool.archetypePartData =
         { fill: "blue", stroke: "red", strokeWidth: 1, category: "tool"},
-        polygonTool.isEnabled = false;
+      polygonTool.isEnabled = false;
       dia.toolManager.mouseDownTools.insertAt(0, polygonTool);
 
       var freehandTool = new FreehandDrawingTool();
@@ -274,6 +321,28 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       freehandTool.isEnabled = false;
       freehandTool.isBackgroundOnly = false;
       dia.toolManager.mouseDownTools.insertAt(1, freehandTool);
+
+      dia.groupTemplate =
+      $(go.Group, "Vertical",
+        {
+          selectionObjectName: "PANEL",  // selection handle goes around shape, not label
+          //ungroupable: true
+        },  // enable Ctrl-Shift-G to ungroup a selected Group
+        $(go.TextBlock,
+          {
+            font: "bold 19px sans-serif",
+            isMultiline: false,  // don't allow newlines in text
+            editable: true  // allow in-place editing by user
+          },
+          new go.Binding("text", "text").makeTwoWay(),
+          new go.Binding("stroke", "color")),
+        $(go.Panel, "Auto",
+          { name: "PANEL" },
+          $(go.Shape, "Rectangle",  // the rectangular shape around the members
+            { fill: "color", stroke: "gray", strokeWidth: 3 }),
+          $(go.Placeholder, { padding: 10 })  // represents where the members are
+        )
+      );
 
     return dia;
   }
@@ -296,12 +365,13 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     this.diagramLinkData = DataSyncService.syncLinkData(changes, this.diagramLinkData);
     this.diagramModelData = DataSyncService.syncModelData(changes, this.diagramModelData);
 
-    console.log('diagramModelChange: ', changes);
+    console.log('diagramModelChange: ', changes) 
   };
 
   public doubleClickScreenField(event:any){
-    //stop the polygon drawing tool when double click
-    this.polygonDrawingTool.isEnabled = false;
+    //stop the polygon drawing tool and select the when double click
+    this.SelectToolCreateNode(this.polygonDrawingTool);
+
     //stop the freen hand drawing when double click
     this.freehandDrawingTool.isEnabled = false;
   }
@@ -327,5 +397,21 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       diagram.select(diagram.findNodeForKey(key));
     }, 'set key');
 
+  }
+
+  public SelectToolCreateNode(tool:go.Tool){
+    if (tool.isEnabled){
+      tool.isEnabled = false;
+      var nodeData = this.diagramPanel.model.nodeDataArray[this.diagramPanel.model.nodeDataArray.length - 1];
+      this.pds.key = nodeData.key;
+      this.pds.location = nodeData.location;
+      this.pds.width = this.diagramPanel.findNodeForKey(nodeData.key).actualBounds.width;
+      this.pds.height = this.diagramPanel.findNodeForKey(nodeData.key).actualBounds.height;
+      Object.keys(this.pds).forEach((prop) => {
+        this.diagramPanel.model.setDataProperty(this.diagramPanel.findNodeForKey(nodeData.key).data, prop, this.pds[prop]);
+      });
+      Object.setPrototypeOf(this.diagramPanel.findNodeForKey(nodeData.key).data, Object.getPrototypeOf(this.pds));
+      this.diagramPanel.select(this.diagramPanel.findNodeForData(nodeData));
+    }
   }
 }

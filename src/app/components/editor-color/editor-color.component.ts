@@ -23,7 +23,6 @@ export class EditorColorComponent implements OnInit {
 
   onSelect(event: any) {
     this.item["PD"][this.item["KEY"]] = event.target.value;
-    this.value = event.target.value;
     console.log(this.item);
 
     this.panelDeviceService.OnPropertiesChanged.next({
@@ -32,6 +31,8 @@ export class EditorColorComponent implements OnInit {
       old:this.value,
       newValue: event.target.value
     });
+
+    this.value = event.target.value;
 
   }
 

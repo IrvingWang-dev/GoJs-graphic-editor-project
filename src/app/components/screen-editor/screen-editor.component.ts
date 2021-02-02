@@ -26,7 +26,7 @@ export class ScreenEditorComponent implements OnInit {
     this.propertiesChangedsubscription = this.panelDeviceService.OnPropertiesChanged.subscribe ( (src) => 
     {
       let pd = src['pd'] as PanelDevice;
-      pd.posstyle = "position: absolute;left:" + (pd.x) + "px;top:" + (pd.y) + "px;background-color:" + pd.color+";";
+      pd.posstyle = "position: absolute;left:" + (pd.x) + "px;top:" + (pd.y) + "px;background-color:" + ";" ;//+ pd.color+";";
     });
   }
 
