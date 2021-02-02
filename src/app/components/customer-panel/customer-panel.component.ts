@@ -75,8 +75,15 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           nodeKeys.forEach((key) => {
             model.nodeDataArray.forEach((nodeData => {
               if (nodeData['key'] === key){
-                if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0){
-                  nodeData['location'] = go.Point.stringify(new go.Point(pd.x,pd.y));
+                if ( src['propertyName'].localeCompare('x') == 0){
+                  nodeData['x'] = pd.x;
+                  nodeData['location'] = go.Point.stringify(new go.Point(pd.x,nodeData['y']));
+                  model.raiseDataChanged(nodeData, 'location', nodeData['location'], nodeData['location']);
+                }
+                else if (src['propertyName'].localeCompare('y') == 0){
+                  nodeData['y'] = pd.y;
+                  nodeData['location'] = go.Point.stringify(new go.Point(nodeData['x'],pd.y));
+                  model.raiseDataChanged(nodeData, 'location', nodeData['location'], nodeData['location']);
                 }     
                 else{
                   nodeData[src['propertyName']] = src['newValue'];
@@ -156,16 +163,29 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       } 
       else if (event.diagram.selection.count > 1){
         var commonProperties = [];
+        var selectNodesData = [];
         var commonObject = new PanelDevice();
         var nodeKeys = [];
         var protoType: Object;
         
         event.diagram.selection.each((node: go.Node)=> {
           commonProperties.push(Object.keys(node.data));
+          selectNodesData.push(node.data);
           nodeKeys.push(node.data.key);
           commonObject = JSON.parse(JSON.stringify(node.data));
-          protoType = Object.getPrototypeOf(node.data);
         })
+
+        for (var i = 0; i < selectNodesData.length; ++i){
+          var tempPro = Object.getPrototypeOf(selectNodesData[i]);
+          if (tempPro.constructor.name.localeCompare('FreeForm') || 
+              tempPro.constructor.name.localeCompare('Polyline')){
+              protoType = tempPro;
+              break;
+          }
+          else{
+            protoType = tempPro;
+          }
+        }
 
          var result = commonProperties.shift().filter(function(v) {
           return commonProperties.every(function(a) {
