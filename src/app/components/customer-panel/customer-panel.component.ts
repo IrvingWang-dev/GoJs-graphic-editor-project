@@ -210,8 +210,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
             }
           }
         })
-        
-        
+          
         Object.setPrototypeOf(commonObject, Object.getPrototypeOf(firstSelectNodeData));   
         this.selectionService.selectPanelDevice = commonObject;
         return;
@@ -280,6 +279,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     const $ = go.GraphObject.make;
     const dia = $(go.Diagram, {
       'undoManager.isEnabled': true,
+      "panningTool.isEnabled": false,
       model: $(go.GraphLinksModel,
         {
           // Must set below property or there will be error after dragging item.
