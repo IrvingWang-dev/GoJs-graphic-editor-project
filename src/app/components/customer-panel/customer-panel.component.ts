@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Type, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as go from 'gojs';
 import { DataSyncService, DiagramComponent } from 'gojs-angular';
 import { Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { PolygonDrawingTool } from 'node_modules/gojs/extensionsTS/PolygonDrawin
 import { GojsToolService } from 'src/app/services/gojs-tool.service';
 import { RightclickContextService } from 'src/app/services/rightclick-context.service';
 import { PRIMARY_OUTLET } from '@angular/router';
+import { Editor } from 'src/app/models/Editor';
 
 @Component({
   selector: 'app-customer-panel',
@@ -162,45 +163,56 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         return;
       } 
       else if (event.diagram.selection.count > 1){
-        var commonProperties = [];
         var selectNodesData = [];
         var commonObject = new PanelDevice();
         var nodeKeys = [];
-        var protoType: Object;
         
         event.diagram.selection.each((node: go.Node)=> {
-          commonProperties.push(Object.keys(node.data));
           selectNodesData.push(node.data);
           nodeKeys.push(node.data.key);
-          commonObject = JSON.parse(JSON.stringify(node.data));
         })
 
-        for (var i = 0; i < selectNodesData.length; ++i){
-          var tempPro = Object.getPrototypeOf(selectNodesData[i]);
-          if (tempPro.constructor.name.localeCompare('FreeForm') == 0 || 
-              tempPro.constructor.name.localeCompare('Polyline') == 0 ){
-              protoType = tempPro;
-              break;
+        var commonProtAndType = {};
+        var firstSelectNodeData = selectNodesData.shift();
+        var commonProt = (Object.keys(firstSelectNodeData)).filter(function(key) {
+            if (Reflect.hasMetadata(Editor, firstSelectNodeData, key)){
+              return selectNodesData.every(function(selectData){
+                if (Reflect.hasMetadata(Editor, selectData, key)){
+                  return Object.keys(selectData).indexOf(key) !== -1;
+                }             
+              })
+            }
+          });  
+
+        commonProt.push('key');
+        commonProt.forEach((key) => {
+          if (Reflect.hasMetadata(Editor, firstSelectNodeData, key)){
+            commonProtAndType[key] = Reflect.getMetadata(Editor, firstSelectNodeData, key);
+          }});
+
+        commonObject = commonObject = JSON.parse(JSON.stringify(firstSelectNodeData));
+        Object.keys(commonObject).forEach((key) => {
+          if (commonProt.indexOf(key) === -1){
+            delete commonObject[key];
+          }
+          else if (key.localeCompare('key') == 0){
+            commonObject[key] = nodeKeys;
           }
           else{
-            protoType = tempPro;
+            if (commonProtAndType[key] === 'string'){
+              commonObject[key] = '';
+            } 
+            else if (commonProtAndType[key] === 'number'){
+              commonObject[key] = 0;
+            }
+            else if (commonProtAndType[key] === 'color') {
+              commonObject[key] = '#0000FF';
+            }
           }
-        }
-
-         var result = commonProperties.shift().filter(function(v) {
-          return commonProperties.every(function(a) {
-              return a.indexOf(v) !== -1;
-          });
-        });
-
-        Object.keys(commonObject).forEach((key) => {
-          if(result.indexOf(key) === -1){
-            delete commonObject[key];
-          }else if (key.localeCompare('key') == 0){
-            commonObject[key] = nodeKeys;
-          }});
+        })
         
-        Object.setPrototypeOf(commonObject, protoType);   
+        
+        Object.setPrototypeOf(commonObject, Object.getPrototypeOf(firstSelectNodeData));   
         this.selectionService.selectPanelDevice = commonObject;
         return;
       }
