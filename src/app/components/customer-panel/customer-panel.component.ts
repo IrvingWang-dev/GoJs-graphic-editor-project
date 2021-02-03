@@ -177,8 +177,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
         for (var i = 0; i < selectNodesData.length; ++i){
           var tempPro = Object.getPrototypeOf(selectNodesData[i]);
-          if (tempPro.constructor.name.localeCompare('FreeForm') || 
-              tempPro.constructor.name.localeCompare('Polyline')){
+          if (tempPro.constructor.name.localeCompare('FreeForm') == 0 || 
+              tempPro.constructor.name.localeCompare('Polyline') == 0 ){
               protoType = tempPro;
               break;
           }
