@@ -10,6 +10,9 @@ import { GojsToolService } from '../../services/gojs-tool.service';
 import { Polygon } from 'src/app/models/PanelDevices/Polygon';
 import { Polyline } from 'src/app/models/PanelDevices/Polyline';
 import { FreeForm } from 'src/app/models/PanelDevices/FreeForm';
+import { Trend } from 'src/app/models/PanelDevices/Trend';
+import { PanelDevice, CreatePVObject } from 'src/app/models/PanelDevice';
+
 
 
 @Component({
@@ -29,40 +32,41 @@ export class ToolboxComponent implements OnInit {
 
   onSelect(toolBox: ToolBox): void {
 
-    // if (toolBox.class == 'NumericEntry')
-    // {
-    //   let pd = new NumericEntry();
-    //   currentScreen.AddPanelDevice(pd);
-    // }
-
     switch (toolBox.class) {
       case 'NumericEntry': {
-        let pd = new NumericEntry();
+        //let pd = new NumericEntry();
+        let pd = CreatePVObject(NumericEntry);
         currentScreen.AddPanelDevice(pd);
         break;
       }
       case 'NumericDisplay': {
-        let pd = new NumericDisplay();
+        //let pd = new NumericDisplay();
+        let pd = CreatePVObject(NumericDisplay);
         currentScreen.AddPanelDevice(pd);
          break;
       }
       case 'Polygon': {
-        let pd = new Polygon();
+        let pd = CreatePVObject(Polygon);
         this.gojsToolService.isPolygonToolEnabled = true;
         this.gojsToolService.OnGoJsToolEnabled.next(pd);
         break;
       }
       case 'Polyline': {
-        let pd = new Polyline();
+        let pd = CreatePVObject(Polyline);
         this.gojsToolService.isPolygonToolEnabled = true;
         this.gojsToolService.isPolylienToolEnabled = true;
         this.gojsToolService.OnGoJsToolEnabled.next(pd);
         break;
       }
       case 'FreeForm': {
-        let pd = new FreeForm();
+        let pd = CreatePVObject(FreeForm);
         this.gojsToolService.isFreehandToolEnabled = true;
         this.gojsToolService.OnGoJsToolEnabled.next(pd);
+        break;
+      }
+      case 'Trend': {
+        let pd = new Trend();
+        currentScreen.AddTrendNode(pd);
         break;
       }
       default: {

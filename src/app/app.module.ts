@@ -16,6 +16,9 @@ import { SelectedViewComponent } from './components/selected-view/selected-view.
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EditorListComponent } from './components/editor-list/editor-list.component';
 import { RightclickContextComponent } from './components/rightclick-context/rightclick-context.component';
+import { AnimationComponent } from './components/animation/animation.component';
+import { EditorTagComponent } from './components/editor-tag/editor-tag.component';
+
 
 @NgModule({
   declarations: [
@@ -29,7 +32,9 @@ import { RightclickContextComponent } from './components/rightclick-context/righ
     ScreenEditorComponent,
     SelectedViewComponent,
     EditorListComponent,
-    RightclickContextComponent
+    RightclickContextComponent,
+    AnimationComponent,
+    EditorTagComponent
   ],
   imports: [
     BrowserModule,

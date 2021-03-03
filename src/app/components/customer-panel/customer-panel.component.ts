@@ -2,7 +2,6 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Outpu
 import * as go from 'gojs';
 import { DataSyncService, DiagramComponent } from 'gojs-angular';
 import { Subscription } from 'rxjs';
-import { NodeData } from 'src/app/models/node-data';
 import { PanelDevice } from 'src/app/models/PanelDevice';
 import { currentScreen, PV800Screen } from 'src/app/models/Screen';
 import { InteractionProxyService } from 'src/app/services/interaction-proxy.service';
@@ -15,6 +14,7 @@ import { GojsToolService } from 'src/app/services/gojs-tool.service';
 import { RightclickContextService } from 'src/app/services/rightclick-context.service';
 import { PRIMARY_OUTLET } from '@angular/router';
 import { Editor } from 'src/app/models/Editor';
+import Chart from 'chart.js';
 
 @Component({
   selector: 'app-customer-panel',
@@ -25,6 +25,8 @@ import { Editor } from 'src/app/models/Editor';
 export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('myDiagram', { static: true }) public myDiagramComponent: DiagramComponent;
+
+  public animation : any;
   
   public diagramPanel: go.Diagram;
 
@@ -52,15 +54,23 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
   public subscription3: Subscription;
   public subscription4: Subscription;
   public subscription5: Subscription;
+  public subscription6: Subscription;
 
   constructor(public service: InteractionProxyService, public selectionService: SelectionServiceService,
     public panelDeviceService: PanelDeviceService, public rightclickContextService: RightclickContextService, public gojsToolService: GojsToolService) { }
 
   ngOnInit(): void {
+    
 
     this.subscription2 = currentScreen.OnPanelDeviceChanged.subscribe( (pd :PanelDevice) =>
     {
         this.AddPanelDevice(pd);
+    });
+
+    this.subscription2 = currentScreen.OnTrendChanged.subscribe((pd: PanelDevice) => 
+    {
+      this.AddTrend(pd);
+      //console.log("hello");
     });
 
     this.subscription3 = this.panelDeviceService.OnPropertiesChanged.subscribe( (src) =>
@@ -75,16 +85,16 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         if (Array.isArray(nodeKeys)){
           nodeKeys.forEach((key) => {
             model.nodeDataArray.forEach((nodeData => {
-              if (nodeData['key'] === key){
+              if (nodeData.key === key){
                 if ( src['propertyName'].localeCompare('x') == 0){
-                  nodeData['x'] = pd.x;
-                  nodeData['location'] = go.Point.stringify(new go.Point(pd.x,nodeData['y']));
-                  model.raiseDataChanged(nodeData, 'location', nodeData['location'], nodeData['location']);
+                  nodeData.x = pd.x;
+                  nodeData.location = go.Point.stringify(new go.Point(pd.x,nodeData.y));
+                  model.raiseDataChanged(nodeData, 'location', nodeData.location, nodeData.location);
                 }
                 else if (src['propertyName'].localeCompare('y') == 0){
-                  nodeData['y'] = pd.y;
-                  nodeData['location'] = go.Point.stringify(new go.Point(nodeData['x'],pd.y));
-                  model.raiseDataChanged(nodeData, 'location', nodeData['location'], nodeData['location']);
+                  nodeData.y = pd.y;
+                  nodeData.location = go.Point.stringify(new go.Point(nodeData.x,pd.y));
+                  model.raiseDataChanged(nodeData, 'location', nodeData.location, nodeData.location);
                 }     
                 else{
                   nodeData[src['propertyName']] = src['newValue'];
@@ -100,9 +110,10 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0)
           model.set(data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
         else
-          // Set position          
-           model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
-            }, 'update node');
+          // Set position     
+          model.set(data, src['propertyName'], src['newValue']);     
+          model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
+          }, 'update node');
     });
 
     this.subscription4 = this.rightclickContextService.OnRightClickContextSelect.subscribe( (selection:string) => 
@@ -121,7 +132,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     });
 
-    this.subscription5 = this.gojsToolService.OnGoJsToolEnabled.subscribe ((pd: PanelDevice) => {
+    this.subscription5 = this.gojsToolService.OnGoJsToolEnabled.subscribe ((pd: PanelDevice) => 
+    {
       //Enabled PolygonDrawingTool
       var polygonTool = this.diagramPanel.toolManager.findTool("PolygonDrawing") as PolygonDrawingTool;
       this.polygonDrawingTool = polygonTool;
@@ -143,7 +155,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       this.gojsToolService.isPolygonToolEnabled = false;
       this.gojsToolService.isPolylienToolEnabled = false;
       this.gojsToolService.isFreehandToolEnabled = false;
-    })    
+
+      currentScreen._panelDevices.push(pd);
+    });
   }
 
   ngOnDestroy(): void {
@@ -151,9 +165,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   public ngAfterViewInit() {
-
     this.diagramPanel = this.myDiagramComponent ? this.myDiagramComponent.diagram : null;
-    var a = this.diagramPanel.toolManager.mouseUpTools;
 
     // Selection was changed in diagram.
     this.diagramPanel.addDiagramListener('ChangedSelection', (event) => 
@@ -288,7 +300,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       )
     });
 
-    // define the Node template
+    //define the Node template
     dia.nodeTemplate =
       $(go.Node, 'Auto',
         {
@@ -300,6 +312,9 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           new go.Binding('stroke', 'borderColor'),
           new go.Binding('figure', 'shape')
         ),
+        $(go.Picture, 
+          {width: 300, height: 200, portId: ""},
+          new go.Binding("element", "datasets", makeLineChart)),
         $(go.TextBlock, 
           { margin: 0, editable: true},
           // UI-Data two way binding.
@@ -314,6 +329,59 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         new go.Binding("width", "width").makeTwoWay(),
         new go.Binding("height", "height").makeTwoWay(),
       )
+
+    // dia.nodeTemplate =
+    // $(go.Node, "Auoto",{
+    //   resizable:true,
+    // },
+
+    //   $(go.Panel, "Auto",
+    //     $(go.Shape, { fill: "transparent" },
+    //       new go.Binding("stroke", "color")),
+    //     $(go.Picture,
+    //       { width: 300, height: 150, portId: "" },
+    //       new go.Binding("element", "datasets", makeLineChart))
+    //   ),
+    //   $(go.TextBlock,
+    //     { margin: 8 },
+    //     new go.Binding("text")),
+    // );
+
+    function makeLineChart(datasets, picture) {
+      var canvases = document.getElementById("myCanvases");
+      var canv = document.createElement("canvas");
+      canv.style.width = "600px";
+      canv.style.height = "300px";
+
+      var div = document.createElement("div");
+      div.style.position = "absolute";
+      div.appendChild(canv);
+      canvases.appendChild(div);
+
+      var config = {  // Chart.js configuration, including the DATASETS data from the model data
+        type: "line",
+        data: {
+          labels: ["1:47:12PM", "1:47:42PM", "1:48:12PM", "1:48:42PM"],
+          datasets: datasets
+        },
+        options: {
+          animation: {
+            onProgress: function() { picture.redraw(); },
+            onComplete: function() {
+              var canvases = document.getElementById("myCanvases");
+              if (canvases) {  // remove the Canvas that was in the DOM for rendering
+                canvases.removeChild(div);
+              }
+              picture.redraw();
+            }
+          }
+        }
+      };
+
+      new Chart(canv, config);
+      return canv;
+    }
+
       dia.nodeTemplateMap.add("tool",
       $(go.Node,
          { locationSpot: go.Spot.Center, isLayoutPositioned: false },
@@ -357,20 +425,19 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       dia.groupTemplate =
       $(go.Group, "Vertical",
         {
-          selectionObjectName: "PANEL",  // selection handle goes around shape, not label
-          //ungroupable: true
-        },  // enable Ctrl-Shift-G to ungroup a selected Group
+          selectionObjectName: "PANEL",       // selection handle goes around shape, not label
+        },                                    // enable Ctrl-Shift-G to ungroup a selected Group
         $(go.TextBlock,
           {
             font: "bold 19px sans-serif",
-            isMultiline: false,  // don't allow newlines in text
-            editable: true  // allow in-place editing by user
+            isMultiline: false,               // don't allow newlines in text
+            editable: true                    // allow in-place editing by user
           },
           new go.Binding("text", "text").makeTwoWay(),
           new go.Binding("stroke", "color")),
         $(go.Panel, "Auto",
           { name: "PANEL" },
-          $(go.Shape, "Rectangle",  // the rectangular shape around the members
+          $(go.Shape, "Rectangle",            // the rectangular shape around the members
             { fill: "color", stroke: "gray", strokeWidth: 3 }),
           $(go.Placeholder, { padding: 10 })  // represents where the members are
         )
@@ -378,27 +445,6 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
     return dia;
   }
-
-  /**
-   * When the diagram model changes (diagram's node data array changed), this method is triggered.
-   * When drag node, this method is triggered.
-   * 
-   * This method is useless in current logic.
-   * 
-   * @param changes 
-   */
-  public diagramModelChange = function(changes: go.IncrementalData) {
-    // when setting state here, be sure to set skipsDiagramUpdate: true since GoJS already has this update
-    // (since this is a GoJS model changed listener event function)
-    // this way, we don't log an unneeded transaction in the Diagram's undoManager history
-    this.skipsDiagramUpdate = true;
-
-    this.diagramNodeData = DataSyncService.syncNodeData(changes, this.diagramNodeData);
-    this.diagramLinkData = DataSyncService.syncLinkData(changes, this.diagramLinkData);
-    this.diagramModelData = DataSyncService.syncModelData(changes, this.diagramModelData);
-
-    console.log('diagramModelChange: ', changes) 
-  };
 
   public doubleClickScreenField(event:any){
     //stop the polygon drawing tool and select the when double click
@@ -428,7 +474,26 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       pd.key = key;
       diagram.select(diagram.findNodeForKey(key));
     }, 'set key');
+  }
 
+  public AddTrend(pd: PanelDevice)
+  {
+    var color = "transparent";
+    var data = {
+      text: "Node ",
+      color: color,
+      location: "1 1",
+      datasets: [{
+        label: "Trend",
+        fill: false,
+        backgroundColor: color,
+        borderColor: color,
+        data: [3,1,2,4],
+      }]
+    };
+      this.diagramPanel.model.commit((diagram) =>{
+      diagram.addNodeData(data);
+    }, "added chart node");
   }
 
   public SelectToolCreateNode(tool:go.Tool){
@@ -446,4 +511,45 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       this.diagramPanel.select(this.diagramPanel.findNodeForData(nodeData));
     }
   }
+
+
+
+  TrendClick(event:any){
+    this.animation = setInterval( () => { 
+      var pd = this.selectedNode.data;
+      pd.x += 10;
+      this.diagramPanel.model.set(this.selectedNode.data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
+
+      console.log(pd.x)
+      
+  }, 1000);
+
+
+
+
+    // this.diagramPanel.model.commit(function(m) {
+    //   //var firstnode = this.diagramPanel.nodes.first();
+    //   var color = go.Brush.darken(go.Brush.randomColor());
+    //   var data = {
+    //     text: "Node ",
+    //     color: color,
+    //     datasets: [{
+    //       label: "some data",
+    //       fill: false,
+    //       backgroundColor: color,
+    //       borderColor: color,
+    //       data: [1,2,3,4]
+    //     }]
+    //   };
+    //   m.addNodeData(data);
+    //   // if (firstnode) {
+    //   //   m.addLinkData({ from: firstnode.key, to: m.getKeyForNodeData(data) });
+    //   //   // new node starts off at same location as the parent node
+    //   //   var newnode = myDiagram.findNodeForData(data);
+    //   //   if (newnode) newnode.location = firstnode.location;
+    //   // }
+    // }, "added chart node");
+  }
+
+
 }

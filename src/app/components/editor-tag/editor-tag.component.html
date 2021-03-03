@@ -1,7 +1,7 @@
-<span class="editor-list">
+<span class="editor-tag">
     <label for="property">{{item.KEY}}</label>
     <select (change)="onSelect($event)" ngModel="{{value}}">
-        <ng-container *ngFor="let item of shapeList">
+        <ng-container *ngFor="let item of Tags">
             <option >{{item}}</option>
         </ng-container>
     </select>

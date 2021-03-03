@@ -15,18 +15,15 @@ export class EditorListComponent implements OnInit {
 
   selectItems = listOption;
   
-
   constructor(public panelDeviceService : PanelDeviceService) { }
-  public optionList = [];
+  public shapeList = [];
+  public Tags = [];
 
   ngOnInit(): void {
     this.value = this.item["PD"][this.item["KEY"]];
-    this.optionList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
-
-    // this.selectItems.forEach(listObject => {
-    //  console.log(listObject.name)
-      
-    // });
+    this.shapeList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
+    this.Tags = ["", "$SysClockSecond"]
+    // this.Tags = ["", "$SysClockData", "$SysClockDay", "$SysClockDataofWeek", "$SysClockHour", "$SysClockData", "$SysClockMinute", "$SysClockMonth", "$SysClockSecond", "$SysClockYear"];
   }
 
   onSelect(event: any) {

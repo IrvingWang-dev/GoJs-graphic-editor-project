@@ -18,7 +18,13 @@ export class PV800Screen
         return this._panelDevices;
     }
 
+    public AddTrendNode(pd: PanelDevice){
+        this._panelDevices.push(pd);
+        this.OnTrendChanged.next(pd);
+    }
+
     public  OnPanelDeviceChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
+    public  OnTrendChanged : Subject<PanelDevice> = new Subject<PanelDevice>();
 }
 
 export var currentScreen : PV800Screen = new PV800Screen();

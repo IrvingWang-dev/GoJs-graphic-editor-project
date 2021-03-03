@@ -1,53 +1,27 @@
-import "reflect-metadata"
-import {Editor} from "./Editor"
-import { ISource, ISourceRead } from "./Source";
+
+import "reflect-metadata";
 import {  } from "typescript";
+import { PanelDevice } from "./PanelDevice";
+import { ISource, ISourceRead } from "./Source";
 import { tagSystem } from "./TagSystem";
+import { systemTagValue } from "./TagSystem";
+import { panelDeviceService } from '../services/panel-device.service';
 
-export class PanelDevice
+
+export class PVObject
 {
-    @Reflect.metadata(Editor, "number")
+    // this is our requirement!!!
     @Reflect.metadata("binding", "read")
-    public x: number = 0;
-
-    @Reflect.metadata(Editor, "number")
-    @Reflect.metadata("binding", "read")
-    public y: number = 0;
-
-    @Reflect.metadata(Editor, "string")
-    public name: string = "";
-
-    @Reflect.metadata(Editor, "string")
-    public caption: string = "text";
-
-    @Reflect.metadata(Editor, "number")
-    @Reflect.metadata("binding", "read")
-    public width: number = 100;
-
-    @Reflect.metadata(Editor, "number")
-    @Reflect.metadata("binding", "read")
-    public height: number = 100;    
+    public x : number = 0;
 
     public _mode: string = 'design';
 
     // magic begin
 
     public sources = new Map<string, ISource>();
-
-    public key : string | number  = 0;
-
-    public location : string = "";
-
-    public posstyle = "";
-    public selected:string = "hide";
-    
-    constructor()
-    {
-        this.name = "DefaultName";
-    }
 }
 
-export function CreatePVObject<T extends PanelDevice>(TCreator: new() => T) : T
+export function CreatePVObject<T extends PVObject>(TCreator: new() => T) : T
 {
     let obj : T = new TCreator();
     let keys = Object.keys(obj);
@@ -62,6 +36,7 @@ export function CreatePVObject<T extends PanelDevice>(TCreator: new() => T) : T
                 (obj as any)[key] = v;
                 console.log(obj);
                 service.OnPropertiesChanged.next({pd: obj, propertyName: key, old: v, newValue: v});
+               // service.onPropertyValueChanged.next({pd: obj, propertyName: key, old: v, newValue: v});
                 console.log(key + " changed!");
             };
             obj.sources.set(key, s);
@@ -70,7 +45,7 @@ export function CreatePVObject<T extends PanelDevice>(TCreator: new() => T) : T
     return obj;
 }
 
-export function ModifySource(obj: PanelDevice, attributeName:string, sourceName:string) : boolean
+export function ModifySource(obj: PVObject, attributeName:string, sourceName:string) : boolean
 {
     // check attribute exist and bindable before change
 
@@ -101,7 +76,7 @@ export function startAnimation(obj :PanelDevice, service: any) : any
     });
 }
 
-export function stopAnimation(obj :PanelDevice) : any
+export function stopAnimation(obj :PVObject) : any
 {
     obj.sources.forEach( source =>
     {
@@ -113,5 +88,3 @@ export function stopAnimation(obj :PanelDevice) : any
         }
     });
 }
-
-

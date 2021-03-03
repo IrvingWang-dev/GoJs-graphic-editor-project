@@ -21,8 +21,8 @@ export class RightclickContextComponent implements OnInit {
     this.subscription = this.rightClickContextService.OnRightClickMenuCall.subscribe((src) => {
       var contextMenuDiv = document.getElementById("context");
       contextMenuDiv.style.position = "absolute";
-      contextMenuDiv.style.left = src['x'] + 220 + "px";
-      contextMenuDiv.style.top = src['y'] + 50 + "px";
+      contextMenuDiv.style.left = src['x'] + 420 + "px";
+      contextMenuDiv.style.top = src['y'] + 70 + "px";
       contextMenuDiv.style.display = "block";
     });
   }

@@ -61,8 +61,5 @@ export class PropertyPanelComponent implements OnInit, OnDestroy {
         
         this.editors.push({ "PD": pd, "KEY": key, "type": metadata });
       }
-    });
-
-
-  }
+    });}
 }

@@ -35,6 +35,11 @@
             "name": "Free Form",
             "class": "FreeForm",
             "icon": "button"
+        },
+        {
+            "name": "Trend",
+            "class": "Trend",
+            "icon": "button"
         }
     ]
 }

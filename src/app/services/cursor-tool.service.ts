@@ -9,3 +9,4 @@ export class CursorToolService {
 
   public isCreationTool:boolean = false;
 }
+

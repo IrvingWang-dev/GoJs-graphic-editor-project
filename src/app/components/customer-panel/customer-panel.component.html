@@ -1,6 +1,8 @@
 <div>
-  <gojs-diagram #myDiagram [initDiagram]='initDiagram' [nodeDataArray]='diagramNodeData'
-    [divClassName]='diagramDivClassName' [modelData]='diagramModelData' [skipsDiagramUpdate]='skipsDiagramUpdate'
-    (modelChange)='diagramModelChange($event)' (dblclick)='doubleClickScreenField($event)' >
+  <gojs-diagram #myDiagram [initDiagram]='initDiagram' 
+    [divClassName]='diagramDivClassName'  (dblclick)='doubleClickScreenField($event)' >
   </gojs-diagram>
+  <!-- <div><button (click)='TrendClick($event)'>StartAnimation</button></div>
+  <div><button (click)='StopAnimation($event)'>StopAnimation</button></div> -->
 </div>
+
