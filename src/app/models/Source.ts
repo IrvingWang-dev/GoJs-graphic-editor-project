@@ -7,6 +7,6 @@ export class ISource
 
 export class ISourceRead extends ISource
 {
-    public OnSourceDataChanged?(v : any, service: any) : void;
+    public OnSourceDataChanged?(v : any, service: any, panelDeviceObj: any) : void;
     public subscritpion? : Subscription;
 }

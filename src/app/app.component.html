@@ -1,15 +1,21 @@
-<h1>GoJS / Angular - Components Sample</h1>
+<h1>GoJS / Angular - Screen Editor Sample</h1>
 <div class="flex">
+
+  <div class="toolbox-panel-container">
+    <span><app-toolbox></app-toolbox></span>
+
+  </div>
   <div class="diagram-panel-container">
     <app-customer-panel></app-customer-panel>
     <app-rightclick-context id="context" style="display: none;"></app-rightclick-context>
+    <span><app-animation></app-animation></span>
     <!-- <app-screen-editor></app-screen-editor> -->
-    <div id="myCanvases" style="position:absolute; top:0px; left:0px; width:0px; height:0px; opacity:0"></div>
+    
   </div>
   <div class="properties-panel-container">
     <span><app-property-panel></app-property-panel></span>
-    <span><app-animation></app-animation></span>
-    <span><app-toolbox></app-toolbox></span>
   </div>
+
 </div>
+<div id="myCanvases" style="position: relative; top:0px; left:0px; width:0px; height:0px; opacity:0"></div> 
 

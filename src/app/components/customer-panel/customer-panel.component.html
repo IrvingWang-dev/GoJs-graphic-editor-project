@@ -1,8 +1,9 @@
 <div>
-  <gojs-diagram #myDiagram [initDiagram]='initDiagram' 
-    [divClassName]='diagramDivClassName'  (dblclick)='doubleClickScreenField($event)' >
+  <gojs-diagram #myDiagram [initDiagram]='initDiagram' [divClassName]='diagramDivClassName'
+    (dblclick)='doubleClickScreenField($event)'>
   </gojs-diagram>
-  <!-- <div><button (click)='TrendClick($event)'>StartAnimation</button></div>
-  <div><button (click)='StopAnimation($event)'>StopAnimation</button></div> -->
+  <!-- <div><button (click)='TrendClick($event)'>Test</button></div> -->
+  <!-- <div><button (click)='StopAnimation($event)'>StopAnimation</button></div> -->
 </div>
 
+<div id="myCanvases" style="position:absolute; top:0px; left:0px; width:0px; height:0px; opacity:0; width: 200px;height: 200px;border: 2px solid red;"></div>

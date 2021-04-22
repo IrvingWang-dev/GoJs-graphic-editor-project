@@ -40,6 +40,17 @@
             "name": "Trend",
             "class": "Trend",
             "icon": "button"
+        },
+        {
+            "name": "Gauges1",
+            "class": "Gauges1",
+            "icon": "button"
+        },
+        {
+            "name": "Gauges2",
+            "class": "Gauges2",
+            "icon": "button"
         }
+
     ]
 }

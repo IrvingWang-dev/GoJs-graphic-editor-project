@@ -22,8 +22,8 @@ export class Polygon extends PanelDevice
     @Reflect.metadata(Editor, "tag")
     public VertiPosTag : string = "";
 
-    @Reflect.metadata(Editor, "tag")
-    public VisibTag : string = "";
+    // @Reflect.metadata(Editor, "tag")
+    // public VisibTag : string = "";
 
     @Reflect.metadata(Editor, "tag")
     public WidthTag : string = "";

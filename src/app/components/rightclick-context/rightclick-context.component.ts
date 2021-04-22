@@ -12,7 +12,7 @@ export class RightclickContextComponent implements OnInit {
   public value:string;
   public subscription: Subscription;
 
-  contextItems = ["Bring to Front", "Send to back"];
+  contextItems = ["Bring to Front", "Send to back", "Group", "UnGroup"];
 
   constructor(public rightClickContextService : RightclickContextService) { }
 

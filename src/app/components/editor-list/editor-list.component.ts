@@ -16,15 +16,48 @@ export class EditorListComponent implements OnInit {
   selectItems = listOption;
   
   constructor(public panelDeviceService : PanelDeviceService) { }
+  // public List = new Map<string, string[]>();
   public shapeList = [];
-  public Tags = [];
+  public category = [];
 
   ngOnInit(): void {
     this.value = this.item["PD"][this.item["KEY"]];
-    this.shapeList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
-    this.Tags = ["", "$SysClockSecond"]
-    // this.Tags = ["", "$SysClockData", "$SysClockDay", "$SysClockDataofWeek", "$SysClockHour", "$SysClockData", "$SysClockMinute", "$SysClockMonth", "$SysClockSecond", "$SysClockYear"];
-  }
+    //this.shapeList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
+    // var shapeList = [
+    //   "Rectangle", 
+    //   "Square", 
+    //   "RoundedRectangle",
+    //   "Ellipse", 
+    //   "Circle", 
+    //   "TriangleRight", 
+    //   "TriangleDown", 
+    //   "TriangleLeft",
+    //   "TriangleUp", 
+    //   "Triangle", "Diamond"];
+
+    // var categoryList = [
+    //   "gaugesTemplate",
+    //   "circularMeterTemplate",
+    // ]
+    // this.List.set("shapeList", shapeList);
+    // this.List.set("categoryList", categoryList);
+    this.shapeList =  [
+    "Rectangle", 
+    "Square", 
+    "RoundedRectangle",
+    "Ellipse", 
+    "Circle", 
+    "TriangleRight", 
+    "TriangleDown", 
+    "TriangleLeft",
+    "TriangleUp", 
+    "Triangle", "Diamond"];
+
+    this.category = [
+      "gaugesTemplate",
+      "circularMeterTemplate",
+    ]
+  };
 
   onSelect(event: any) {
     this.item["PD"][this.item["KEY"]] = event.target.value;

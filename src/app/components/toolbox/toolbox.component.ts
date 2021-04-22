@@ -11,6 +11,7 @@ import { Polygon } from 'src/app/models/PanelDevices/Polygon';
 import { Polyline } from 'src/app/models/PanelDevices/Polyline';
 import { FreeForm } from 'src/app/models/PanelDevices/FreeForm';
 import { Trend } from 'src/app/models/PanelDevices/Trend';
+import { Gauges } from 'src/app/models/PanelDevices/Gauges';
 import { PanelDevice, CreatePVObject } from 'src/app/models/PanelDevice';
 
 
@@ -67,6 +68,17 @@ export class ToolboxComponent implements OnInit {
       case 'Trend': {
         let pd = new Trend();
         currentScreen.AddTrendNode(pd);
+        break;
+      }
+      case 'Gauges1': {
+        let pd = new Gauges();
+        currentScreen.AddPanelDevice(pd);
+        break;
+      }
+      case 'Gauges2': {
+        let pd = new Gauges();
+        pd.category = "circularMeterTemplate"
+        currentScreen.AddPanelDevice(pd);
         break;
       }
       default: {

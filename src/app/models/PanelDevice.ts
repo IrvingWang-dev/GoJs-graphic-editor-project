@@ -56,12 +56,16 @@ export function CreatePVObject<T extends PanelDevice>(TCreator: new() => T) : T
         if (binding == 'read')
         {
             let s = new ISourceRead();
-            s.OnSourceDataChanged = (v : any, service: any) : void => 
+            s.OnSourceDataChanged = (v : any, service: any, panelDeviceObj: any) : void => 
             {
                 // we know we have the key!!!
-                (obj as any)[key] = v;
-                console.log(obj);
-                service.OnPropertiesChanged.next({pd: obj, propertyName: key, old: v, newValue: v});
+                //(obj as any)[key] = v;
+                console.log(panelDeviceObj);
+
+                var value = (panelDeviceObj as any)[key];
+                value += 1;
+                (panelDeviceObj as any)[key] = value;
+                service.OnPropertiesChanged.next({pd: panelDeviceObj, propertyName: key, old: value, newValue: value});
                 console.log(key + " changed!");
             };
             obj.sources.set(key, s);
@@ -95,7 +99,7 @@ export function startAnimation(obj :PanelDevice, service: any) : any
             var tag = tagSystem.GetTag(readSource.ReourceName);
             readSource.subscritpion = tag?.onValueChanged.subscribe( (v : any) => {
                 if (readSource.OnSourceDataChanged)
-                    readSource.OnSourceDataChanged(v, service);
+                    readSource.OnSourceDataChanged(v, service, obj);
             });
         }
     });

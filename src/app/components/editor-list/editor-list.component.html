@@ -1,8 +1,16 @@
 <span class="editor-list">
     <label for="property">{{item.KEY}}</label>
     <select (change)="onSelect($event)" ngModel="{{value}}">
-        <ng-container *ngFor="let item of shapeList">
-            <option >{{item}}</option>
+        <ng-container *ngIf="item['KEY'] == 'shape'">
+            <ng-container *ngFor="let item of shapeList">
+                <option >{{item}}</option>
+            </ng-container>
         </ng-container>
+        <ng-container *ngIf="item['KEY'] == 'category'">
+            <ng-container *ngFor="let item of category">
+                <option >{{item}}</option>
+            </ng-container>
+        </ng-container>
+
     </select>
 </span>
