@@ -30,29 +30,15 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public animation : any;
   public nodeTemplate : go.Node;
-  
   public diagramPanel: go.Diagram;
   public Group: go.Group;
-
   public selectedNode: go.Node | null = null;
-
+  public lastSelectedNode: go.Node | null = null;
   public polygonDrawingTool: go.Tool;
   public freehandDrawingTool: go.Tool;
   public pds:PanelDevice;
-
   public window: Window;
-
-  public nodeIndex = 0;
-
-  public locationStr: string;
-
   public diagramDivClassName: string = 'myDiagramDiv';
-
-  public diagramModelData = { prop: 'value' };
-
-  public skipsDiagramUpdate = false;
-
-  public diagramNodeData: Array<go.ObjectData> = [];
 
   public subscription2: Subscription;
   public subscription3: Subscription;
@@ -78,56 +64,56 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
     this.subscription3 = this.panelDeviceService.OnPropertiesChanged.subscribe( (src) =>
     {
-        // Use model's commit to update node.
-        this.diagramPanel.model.commit((model) => {
+      let pd = src['pd'] as PanelDevice;
+      var keyArray = pd.key;
 
-        let linkModal = model as go.GraphLinksModel;
-        let pd = src['pd'] as PanelDevice;
-        var nodeKeys = pd.key;
-
-        if (Array.isArray(nodeKeys)){
-          nodeKeys.forEach((key) => {
-            model.nodeDataArray.forEach((nodeData => {
-              if (nodeData.key === key){
-                if ( src['propertyName'].localeCompare('x') == 0){
-                  nodeData.x = pd.x;
-                  nodeData.location = go.Point.stringify(new go.Point(pd.x,nodeData.y));
-                  model.raiseDataChanged(nodeData, 'location', nodeData.location, nodeData.location);
-                }
-                else if (src['propertyName'].localeCompare('y') == 0){
-                  nodeData.y = pd.y;
-                  nodeData.location = go.Point.stringify(new go.Point(nodeData.x,pd.y));
-                  model.raiseDataChanged(nodeData, 'location', nodeData.location, nodeData.location);
-                }     
-                else{
-                  nodeData[src['propertyName']] = src['newValue'];
-                  model.raiseDataChanged(nodeData, src['propertyName'], src['old'], src['newValue']);
-                }
-              }
-            }))
-          });
+      if ("isGroup" in pd){
+        var groupPd = pd as Groups;
+        keyArray = groupPd.memberKeys;
+        UpdateNodeProperties(this.diagramPanel.model, src, groupPd);
+        if (!(src['propertyName'].localeCompare('color') == 0 )){
           return;
         }
+      }
+      if (!Array.isArray(keyArray)){
+        let nodeData = this.diagramPanel.model.findNodeDataForKey(keyArray);
+        UpdateNodeProperties(this.diagramPanel.model, src, nodeData);
+      }
+      else{
+        keyArray.forEach((key) => {
+          let nodeData = this.diagramPanel.model.findNodeDataForKey(key);
+          UpdateNodeProperties(this.diagramPanel.model, src, nodeData);
+        })
+      }
 
-        let data = linkModal.findNodeDataForKey(pd.key);     
-        if ( src['propertyName'].localeCompare('x') == 0 || src['propertyName'].localeCompare('y') == 0)
-          model.set(data, "location", go.Point.stringify(new go.Point(pd.x,pd.y)));
+        // else if (pd.constructor.name.localeCompare('Trend') == 0){
+        //   Object.keys(src.pd['datasets'][0]).forEach((key) => {
+        //     if (key.localeCompare(src['propertyName']) == 0){
+        //       src.pd['datasets'][0][src['propertyName']] = src['newValue'];  
+        //       model.set(data, 'datasets', src.pd['datasets']);
+        //       model.raiseDataChanged(data, 'datasets', src.pd['datasets'], src.pd['datasets']);
+        //     }
+        //   })
+        // }
 
-        else if (pd.constructor.name.localeCompare('Trend') == 0){
-          Object.keys(src.pd['datasets'][0]).forEach((key) => {
-            if (key.localeCompare(src['propertyName']) == 0){
-              src.pd['datasets'][0][src['propertyName']] = src['newValue'];  
-              model.set(data, 'datasets', src.pd['datasets']);
-              model.raiseDataChanged(data, 'datasets', src.pd['datasets'], src.pd['datasets']);
-            }
-          })
+    });
+
+    function UpdateNodeProperties(diagrameModel: go.Model, src: any, data: any) {
+      diagrameModel.commit((model) => {
+        if ( src['propertyName'].localeCompare('x') == 0){
+          data.x = src['newValue'];
+          model.set(data, "location", go.Point.stringify(new go.Point(data.x, data.y)));
         }
-        else
-          // Set position     
+        else if (src['propertyName'].localeCompare('y') == 0 ){
+          data.y = src['newValue'];
+          model.set(data, "location", go.Point.stringify(new go.Point(data.x, data.y)));
+        }
+        else {
           model.set(data, src['propertyName'], src['newValue']);     
           model.raiseDataChanged(data, src['propertyName'], src['old'], src['newValue']);
-          }, 'update node');
-    });
+        }
+      }, 'update node')
+    }
 
     this.subscription4 = this.rightclickContextService.OnRightClickContextSelect.subscribe( (selection:string) => 
     {
@@ -187,6 +173,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public ngAfterViewInit() {
     this.diagramPanel = this.myDiagramComponent ? this.myDiagramComponent.diagram : null;
+    var panel = this.diagramPanel;
 
     // Selection was changed in diagram.
     this.diagramPanel.addDiagramListener('ChangedSelection', (event) => 
@@ -210,17 +197,8 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       // Only handle one node for properties panel.
       const selectinoNode = event.diagram.selection.first();
       if (selectinoNode instanceof go.Node) {  
-        if (selectinoNode.data.isGroup){
-          selectinoNode.data.width = selectinoNode.actualBounds.width;
-          selectinoNode.data.height = Math.round(selectinoNode.actualBounds.height);
-        }   
-
-        if (selectinoNode.data.group){
-          var groupNode = this.diagramPanel.findNodeForKey(selectinoNode.data.group);
-          if(!groupNode.isHighlighted){
-            this.diagramPanel.select(groupNode);
-          }
-        }
+        if(AdjustGroupMemberSelectSequence(selectinoNode, this.diagramPanel)){return};
+        InitializeGroupObject(selectinoNode);
 
         this.selectedNode = selectinoNode;
         this.service.diagramChanged(this.selectedNode);
@@ -231,6 +209,41 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     });
 
+    function AdjustGroupMemberSelectSequence(node: go.Node, diagramPanel: any){
+      if (node.data.group){
+        node.data.groupKey = node.data.group;
+        var groupNode = diagramPanel.findNodeForKey(node.data.group);
+        if (!groupNode.data.hasSelected){
+          diagramPanel.select(groupNode);
+          return true;
+        }
+        else{
+          groupNode.data.hasSelected = false;
+        } }
+    }
+
+    function InitializeGroupObject(node: go.Node){
+      if (node.data.isGroup){
+        node.data.width = Math.round(node.actualBounds.width);
+        node.data.height = Math.round(node.actualBounds.height);
+        node.data.x = Math.round(node.actualBounds.x);
+        node.data.y = Math.round(node.actualBounds.y);
+        node.data.hasSelected = true;
+        node.cursor = "move"
+        node.selectionChanged = function(selectinoNode) {NodeSelectionChanged(selectinoNode)}
+      }  
+    }
+
+    function NodeSelectionChanged(node: any){
+      var mousePoint = panel.transformViewToDoc(panel.lastInput.viewPoint);
+      if (node.data.isGroup && node.actualBounds.containsPoint(mousePoint)){
+        node.data.hasSelected = true;
+      }
+      else{
+        node.data.hasSelected = false;
+      }
+    }
+
     function FilterCommonProerties(selectNodesData: any, nodeKeys: any) {
       var commonObject = new PanelDevice();
       var commonProtAndType = {};
@@ -240,10 +253,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
             return selectNodesData.every(function(selectData){
               if (Reflect.hasMetadata(Editor, selectData, key)){
                 return Object.keys(selectData).indexOf(key) !== -1;
-              }             
-            })
-          }
-        });  
+              }})}});  
 
       commonProt.push('key');
       commonProt.forEach((key) => {
@@ -279,39 +289,26 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
     // Size of node was changed.
     this.diagramPanel.addDiagramListener('PartResized', (event) => {
       let pd = this.selectionService.selectPanelDevice;
-
-      var detaWidth = this.selectedNode.actualBounds.width - pd.width;
-      var detaheight = Math.round(this.selectedNode.actualBounds.height - pd.height);
       pd.width = this.selectedNode.actualBounds.width;
       pd.height = Math.round(this.selectedNode.actualBounds.height);
 
-      // if (pd.constructor.name.localeCompare("Groups") == 0){  
-      //   ModifyGroupsMembersSize("width", detaWidth, pd as Groups, this.diagramPanel, this.panelDeviceService)
-      //   ModifyGroupsMembersSize("height", detaheight, pd as Groups, this.diagramPanel, this.panelDeviceService)
-      // }
       // this is only a update to tell others update the properties, this may not very good!
       this.selectionService.OnSelectionChanged.next(1);
     });
 
-    // function ModifyGroupsMembersSize(direction:string, width: any, groupObject: Groups, diagramPanel: go.Diagram, service: PanelDeviceService) {
-    //   if (groupObject.memberKeys){
-    //     groupObject.memberKeys.forEach((key) => {
-    //       var nodeData = diagramPanel.model.findNodeDataForKey(key);
-    //       service.OnPropertiesChanged.next({ 
-    //       pd: nodeData, 
-    //       propertyName: direction,
-    //       old: nodeData.width,
-    //       newValue: nodeData.width + width})
-    //     })
-    //   }
-    // }
-
     // Node was moved.
     this.myDiagramComponent.diagram.addDiagramListener('SelectionMoved', (event) => {
       let pd = this.selectionService.selectPanelDevice;
-      pd.x = go.Point.parse(pd.location).x;
-      pd.y = go.Point.parse(pd.location).y;
+      pd.x = Math.round(go.Point.parse(pd.location).x);
+      pd.y = Math.round(go.Point.parse(pd.location).y);
 
+      //resize the group size if the node is a group member
+      if (pd.isGroupMember){
+        var groupNode = this.diagramPanel.findNodeForKey(pd.groupKey) as go.Group;
+        var placeholder = groupNode.placeholder;
+        this.diagramPanel.model.set(groupNode.data, 'width', placeholder.actualBounds.width);
+        this.diagramPanel.model.set(groupNode.data, 'height', placeholder.actualBounds.height); 
+      }
       // this is only a update to tell others update the properties, this may not very good!
       this.selectionService.OnSelectionChanged.next(1);
     });
@@ -343,12 +340,18 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
       //Find Group member parts
       var groupNode = this.diagramPanel.findNodeForKey(groupNodeData.key) as go.Group
       var memberKeys = [];
+      var memberNames = [];
+      var groupKey = 0;
       groupNode.memberParts.each( (part) => {
         memberKeys.push(part.data.key);
+        memberNames.push(part.data.name);
+        part.data.isGroupMember = true;
+        groupKey = part.data.group;
       }) 
-      groupNodeData["memberKeys"] = memberKeys;
-      groupNodeData["width"] = 0;
-      groupNodeData["height"] = 0;
+      groupObject.memberKeys = memberKeys;
+      groupObject.customize = memberNames;
+      groupObject.key = groupKey;
+      Object.assign(groupNodeData, groupObject);
     });
 
     window.addEventListener("mouseup", (event)=>{
@@ -400,6 +403,10 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
         new go.Binding("width", "width").makeTwoWay(),
         new go.Binding("height", "height").makeTwoWay(),
       )
+
+      dia.nodeTemplate.selectionAdornmentTemplate =
+      $(go.Adornment, "Spot",
+      );
 
     var trendTemplate =
      $(go.Node, "Auoto",{
@@ -680,7 +687,7 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           resizeObjectName: "GroupShape",
           locationObjectName: "GroupShape"
         },         
-        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),                       
+        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),                    
         $(go.TextBlock,
           {
             font: "bold 19px sans-serif",
@@ -691,14 +698,13 @@ export class CustomerPanelComponent implements OnInit, OnDestroy, AfterViewInit 
           new go.Binding("stroke", "color")),
         $(go.Panel, "Auto",
           { name: "PANEL"},
-          new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
           $(go.Shape, "Rectangle",            // the rectangular shape around the members
-          { name: "GroupShape", fill: "transparent", stroke: "transparent", strokeWidth: 1, }),
-          $(go.Placeholder, { margin: 5, background: "transparent" })  // represents where the members are
-          
+          { name: "GroupShape", fill: "transparent", stroke: "transparent", strokeWidth: 1 },
+          new go.Binding("width", "width").makeTwoWay(),
+          new go.Binding("height", "height").makeTwoWay()),
+          $(go.Placeholder, { margin: 0, background: "transparent"})  // represents where the members are
         )
       );
-
     return dia;
   }
 

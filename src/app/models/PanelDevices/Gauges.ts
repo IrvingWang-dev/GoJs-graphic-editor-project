@@ -16,4 +16,13 @@ export class Gauges extends PanelDevice
 
     // @Reflect.metadata(Editor, "list")
     // public category : string = "circularMeterTemplate";
+
+    private static number: number = 0;
+
+    constructor()
+    {
+        super();
+        Gauges.number += 1;
+        this.name = "Gauges" + Gauges.number;
+    }
 }

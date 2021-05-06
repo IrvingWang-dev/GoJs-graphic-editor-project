@@ -26,4 +26,13 @@ export class FreeForm extends PanelDevice
 
     // @Reflect.metadata(Editor, "tag")
     // public WidthTag : string = "";
+
+    private static number: number = 0;
+
+    constructor()
+    {
+        super();
+        FreeForm.number += 1;
+        this.name = "FreeForm" + FreeForm.number;
+    }
 }

@@ -29,6 +29,8 @@ export class PanelDevice
     public height: number = 100;    
 
     public _mode: string = 'design';
+    public isGroupMember: boolean = false;
+    public groupKey: number;
 
     // magic begin
 

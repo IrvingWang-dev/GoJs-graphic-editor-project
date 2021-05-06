@@ -19,28 +19,16 @@ export class EditorListComponent implements OnInit {
   // public List = new Map<string, string[]>();
   public shapeList = [];
   public category = [];
+  public groupMemberNames = [];
 
   ngOnInit(): void {
     this.value = this.item["PD"][this.item["KEY"]];
-    //this.shapeList = ["Rectangle", "RoundedRectangle", "Circle", "Ellipse"];
-    // var shapeList = [
-    //   "Rectangle", 
-    //   "Square", 
-    //   "RoundedRectangle",
-    //   "Ellipse", 
-    //   "Circle", 
-    //   "TriangleRight", 
-    //   "TriangleDown", 
-    //   "TriangleLeft",
-    //   "TriangleUp", 
-    //   "Triangle", "Diamond"];
 
-    // var categoryList = [
-    //   "gaugesTemplate",
-    //   "circularMeterTemplate",
-    // ]
-    // this.List.set("shapeList", shapeList);
-    // this.List.set("categoryList", categoryList);
+    if (this.item["KEY"].localeCompare("customize") == 0)
+    {
+      this.groupMemberNames = this.item["PD"][this.item["KEY"]];
+    }
+
     this.shapeList =  [
     "Rectangle", 
     "Square", 

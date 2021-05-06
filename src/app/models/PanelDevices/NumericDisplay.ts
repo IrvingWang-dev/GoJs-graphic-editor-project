@@ -36,4 +36,13 @@ export class NumericDisplay extends PanelDevice
 
     @Reflect.metadata(Editor, "tag")
     public WidthTag : string = "";
+
+    private static number: number = 0;
+
+    constructor()
+    {
+        super();
+        NumericDisplay.number += 1;
+        this.name = "NumericDisplay" + NumericDisplay.number;
+    }
 }

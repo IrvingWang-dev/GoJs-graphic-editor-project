@@ -26,4 +26,13 @@ export class Polyline extends PanelDevice
 
     @Reflect.metadata(Editor, "tag")
     public WidthTag : string = "";
+
+    private static number: number = 0;
+
+    constructor()
+    {
+        super();
+        Polyline.number += 1;
+        this.name = "Polyline" + Polyline.number;
+    }
 }
